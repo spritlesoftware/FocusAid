@@ -1,0 +1,85 @@
+{
+  "buildFiles": [
+    "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/node_modules/@react-native-async-storage/async-storage/android/build/generated/source/codegen/jni/CMakeLists.txt",
+    "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/node_modules/react-native-haptic-feedback/android/build/generated/source/codegen/jni/CMakeLists.txt",
+    "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/node_modules/react-native-permissions/android/build/generated/source/codegen/jni/CMakeLists.txt",
+    "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt",
+    "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/node_modules/react-native-screens/android/src/main/jni/CMakeLists.txt",
+    "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/CMakeLists.txt",
+    "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup/CMakeLists.txt",
+    "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/node_modules/whisper.rn/android/build/generated/source/codegen/jni/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/sathyapriya/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/android/app/.cxx/Debug/6i6p725x/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/sathyapriya/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/android/app/.cxx/Debug/6i6p725x/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "react_codegen_RNVectorIconsSpec::@479809fae146501fd34d": {
+      "artifactName": "react_codegen_RNVectorIconsSpec",
+      "abi": "x86_64",
+      "runtimeFiles": []
+    },
+    "react_codegen_safeareacontext::@7984cd80db47aa7b952a": {
+      "artifactName": "react_codegen_safeareacontext",
+      "abi": "x86_64",
+      "output": "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/android/app/build/intermediates/cxx/Debug/6i6p725x/obj/x86_64/libreact_codegen_safeareacontext.so",
+      "runtimeFiles": [
+        "/Users/sathyapriya/.gradle/caches/8.10.2/transforms/eb4b98dea289284ca2b26e9265bd49ab/transformed/fbjni-0.6.0/prefab/modules/fbjni/libs/android.x86_64/libfbjni.so",
+        "/Users/sathyapriya/.gradle/caches/8.10.2/transforms/2fa3c78e855de2c4ef8aa6911c4216a0/transformed/react-android-0.76.0-debug/prefab/modules/jsi/libs/android.x86_64/libjsi.so",
+        "/Users/sathyapriya/.gradle/caches/8.10.2/transforms/2fa3c78e855de2c4ef8aa6911c4216a0/transformed/react-android-0.76.0-debug/prefab/modules/reactnative/libs/android.x86_64/libreactnative.so"
+      ]
+    },
+    "react_codegen_RNWhisperSpec::@0b12501bf4f235d0155a": {
+      "artifactName": "react_codegen_RNWhisperSpec",
+      "abi": "x86_64",
+      "runtimeFiles": []
+    },
+    "react_codegen_RNPermissionsSpec::@7ad697819b753921c957": {
+      "artifactName": "react_codegen_RNPermissionsSpec",
+      "abi": "x86_64",
+      "runtimeFiles": []
+    },
+    "react_codegen_rnscreens::@25bcbd507e98d3a854ad": {
+      "artifactName": "react_codegen_rnscreens",
+      "abi": "x86_64",
+      "output": "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/android/app/build/intermediates/cxx/Debug/6i6p725x/obj/x86_64/libreact_codegen_rnscreens.so",
+      "runtimeFiles": [
+        "/Users/sathyapriya/.gradle/caches/8.10.2/transforms/2fa3c78e855de2c4ef8aa6911c4216a0/transformed/react-android-0.76.0-debug/prefab/modules/reactnative/libs/android.x86_64/libreactnative.so",
+        "/Users/sathyapriya/.gradle/caches/8.10.2/transforms/2fa3c78e855de2c4ef8aa6911c4216a0/transformed/react-android-0.76.0-debug/prefab/modules/jsi/libs/android.x86_64/libjsi.so",
+        "/Users/sathyapriya/.gradle/caches/8.10.2/transforms/eb4b98dea289284ca2b26e9265bd49ab/transformed/fbjni-0.6.0/prefab/modules/fbjni/libs/android.x86_64/libfbjni.so"
+      ]
+    },
+    "appmodules::@6890427a1f51a3e7e1df": {
+      "artifactName": "appmodules",
+      "abi": "x86_64",
+      "output": "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/android/app/build/intermediates/cxx/Debug/6i6p725x/obj/x86_64/libappmodules.so",
+      "runtimeFiles": [
+        "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/android/app/build/intermediates/cxx/Debug/6i6p725x/obj/x86_64/libreact_codegen_safeareacontext.so",
+        "/Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/android/app/build/intermediates/cxx/Debug/6i6p725x/obj/x86_64/libreact_codegen_rnscreens.so",
+        "/Users/sathyapriya/.gradle/caches/8.10.2/transforms/eb4b98dea289284ca2b26e9265bd49ab/transformed/fbjni-0.6.0/prefab/modules/fbjni/libs/android.x86_64/libfbjni.so",
+        "/Users/sathyapriya/.gradle/caches/8.10.2/transforms/2fa3c78e855de2c4ef8aa6911c4216a0/transformed/react-android-0.76.0-debug/prefab/modules/jsi/libs/android.x86_64/libjsi.so",
+        "/Users/sathyapriya/.gradle/caches/8.10.2/transforms/2fa3c78e855de2c4ef8aa6911c4216a0/transformed/react-android-0.76.0-debug/prefab/modules/reactnative/libs/android.x86_64/libreactnative.so"
+      ]
+    },
+    "react_codegen_RNHapticFeedbackSpec::@a83561f277f6afbb326c": {
+      "artifactName": "react_codegen_RNHapticFeedbackSpec",
+      "abi": "x86_64",
+      "runtimeFiles": []
+    },
+    "react_codegen_rnasyncstorage::@1596841e19ec5b9eeffe": {
+      "artifactName": "react_codegen_rnasyncstorage",
+      "abi": "x86_64",
+      "runtimeFiles": []
+    }
+  }
+}
