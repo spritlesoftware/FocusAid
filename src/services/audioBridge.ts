@@ -58,11 +58,11 @@ export function startAudioBridge() {
           .map((k) => k.trim())
           .filter(Boolean);
 
-        // Find the first keyword that matches the transcribed text (using fuzzy matching)
-        const matchedKeyword = activeKeywords.find((kw) =>
+        // Find all keywords that match the transcribed text (using fuzzy matching)
+        const matchedKeywords = activeKeywords.filter((kw) =>
           fuzzyIncludes(transcript, kw),
         );
-        const confirmed = matchedKeyword !== undefined;
+        const confirmed = matchedKeywords.length > 0;
 
         // Load debug logs preference from AsyncStorage
         let enableDebugLogs = false;
@@ -79,23 +79,27 @@ export function startAudioBridge() {
             `[AudioBridge] KWS Triggered. Active Keywords: ${JSON.stringify(activeKeywords)}`,
           );
           console.log(
-            `[AudioBridge] Whisper Transcript: "${transcript}" | Matched: ${matchedKeyword || "None"} | Confirmed: ${confirmed}`,
+            `[AudioBridge] Whisper Transcript: "${transcript}" | Matched: ${matchedKeywords.join(", ") || "None"} | Confirmed: ${confirmed}`,
           );
         }
 
         // 2. Only trigger haptic alert and save/display the detection if one of the keywords is confirmed (spoken)
-        if (confirmed && matchedKeyword) {
-          // Retrieve original casing of the matched keyword if possible
-          const originalKw =
-            rawEvent.keyword
-              .split(",")
-              .map((k) => k.trim())
-              .find((k) => k.toLowerCase() === matchedKeyword) ||
-            matchedKeyword;
+        if (confirmed && matchedKeywords.length > 0) {
+          // Retrieve original casing of the matched keywords if possible
+          const originalKeywords = matchedKeywords.map((matchedKw) => {
+            return (
+              rawEvent.keyword
+                .split(",")
+                .map((k) => k.trim())
+                .find((k) => k.toLowerCase() === matchedKw) ||
+              matchedKw
+            );
+          });
+          const originalKwString = originalKeywords.join(", ");
 
           const detection: Detection = {
             id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-            keyword: originalKw,
+            keyword: originalKwString,
             score: rawEvent.score,
             timestamp: rawEvent.timestamp ?? Date.now(),
             clipPath: rawEvent.clipPath,
@@ -176,8 +180,15 @@ function isFuzzyMatch(word: string, keyword: string): boolean {
 
   if (w === kw) return true;
 
+  // Short keywords (length <= 3) must match exactly.
+  // Since we already checked w === kw above, if it's not identical, it's not a match.
+  if (kw.length <= 3) {
+    return false;
+  }
+
   // Check for simple inclusion if lengths are very close (e.g., "spatial" vs "spatia")
-  if (w.includes(kw) || kw.includes(w)) {
+  // Both strings must be longer than 3 characters to avoid false matches on single characters.
+  if (w.length > 3 && kw.length > 3 && (w.includes(kw) || kw.includes(w))) {
     const lenDiff = Math.abs(w.length - kw.length);
     if (lenDiff <= 2) return true;
   }
@@ -185,9 +196,7 @@ function isFuzzyMatch(word: string, keyword: string): boolean {
   const dist = getLevenshteinDistance(w, kw);
 
   // Custom thresholds based on the keyword length to prevent false matches on short words
-  if (kw.length <= 3) {
-    return dist === 0; // Exact match only for short words like "mom", "dad"
-  } else if (kw.length <= 6) {
+  if (kw.length <= 6) {
     return dist <= 1; // Allow 1 character mismatch for medium words (e.g. "spatia" vs "spatial")
   } else {
     return dist <= 2; // Allow up to 2 character mismatches for longer words
