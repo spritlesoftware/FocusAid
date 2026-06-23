@@ -18,16 +18,17 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { updateThreshold } from "../services/kwsService";
 
-const PRESET_WORDS = ["Grandma", "Mom", "Dad", "Help"];
+
 
 const SETTINGS_KEY = "@hearing_trigger:settings";
 
 export function SettingsScreen() {
-  const [keywords, setKeywords] = useState<string[]>(["help"]);
+  const [keywords, setKeywords] = useState<string[]>(["test", "help"]);
   const [customInput, setCustomInput] = useState("");
   const [threshold, setThreshold] = useState("0.5");
   const [cooldown, setCooldown] = useState("6000");
   const [useWhisper, setUseWhisper] = useState(true);
+  const [enableDebugLogs, setEnableDebugLogs] = useState(false);
 
   // Load persisted settings on mount
   useEffect(() => {
@@ -44,6 +45,7 @@ export function SettingsScreen() {
         if (s.threshold != null) setThreshold(String(s.threshold));
         if (s.cooldownMs != null) setCooldown(String(s.cooldownMs));
         if (s.useWhisper != null) setUseWhisper(s.useWhisper);
+        if (s.enableDebugLogs != null) setEnableDebugLogs(s.enableDebugLogs);
       } catch {}
     });
   }, []);
@@ -58,6 +60,7 @@ export function SettingsScreen() {
       threshold: parseFloat(threshold) || 0.5,
       cooldownMs: parseInt(cooldown, 10) || 6000,
       useWhisper,
+      enableDebugLogs,
     };
     await AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(parsed));
     await updateThreshold(parsed.threshold);
@@ -67,14 +70,7 @@ export function SettingsScreen() {
     );
   };
 
-  const toggleKeyword = (word: string) => {
-    const lower = word.toLowerCase().trim();
-    if (keywords.includes(lower)) {
-      setKeywords((prev) => prev.filter((w) => w !== lower));
-    } else {
-      setKeywords((prev) => [...prev, lower]);
-    }
-  };
+
 
   const addCustomKeyword = () => {
     const val = customInput.toLowerCase().trim();
@@ -143,32 +139,7 @@ export function SettingsScreen() {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.sectionLabel}>Preset Options</Text>
-      <Text style={styles.hint}>
-        Tap to toggle presets into your active trigger list. Simple 1–2 syllable
-        words work best.
-      </Text>
 
-      {/* Preset chips */}
-      <View style={styles.chips}>
-        {PRESET_WORDS.map((w) => {
-          const lower = w.toLowerCase();
-          const isActive = keywords.includes(lower);
-          return (
-            <TouchableOpacity
-              key={w}
-              style={[styles.chip, isActive && styles.chipActive]}
-              onPress={() => toggleKeyword(w)}
-            >
-              <Text
-                style={[styles.chipText, isActive && styles.chipTextActive]}
-              >
-                {w}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
 
       <Text style={styles.sectionLabel}>Sensitivity Threshold</Text>
       <Text style={styles.hint}>
@@ -207,6 +178,21 @@ export function SettingsScreen() {
           value={useWhisper}
           onValueChange={setUseWhisper}
           thumbColor={useWhisper ? "#01696f" : "#ccc"}
+          trackColor={{ true: "#cedcd8", false: "#eee" }}
+        />
+      </View>
+
+      <View style={styles.row}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.sectionLabel}>Enable Debug Logs</Text>
+          <Text style={styles.hint}>
+            Print key verification and transcription logs (helpful for local debugging).
+          </Text>
+        </View>
+        <Switch
+          value={enableDebugLogs}
+          onValueChange={setEnableDebugLogs}
+          thumbColor={enableDebugLogs ? "#01696f" : "#ccc"}
           trackColor={{ true: "#cedcd8", false: "#eee" }}
         />
       </View>

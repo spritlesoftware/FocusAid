@@ -22,7 +22,7 @@ type Phase = 'setup' | 'ready' | 'listening' | 'error';
 export function HomeScreen() {
   const [phase, setPhase]       = useState<Phase>('setup');
   const [progress, setProgress] = useState('');
-  const [keywords, setKeywords] = useState<string[]>(['priya']);
+  const [keywords, setKeywords] = useState<string[]>(['test', 'help']);
   const detections              = useDetectionEvents(10);
 
   // Load persisted keywords from Settings on every focus
