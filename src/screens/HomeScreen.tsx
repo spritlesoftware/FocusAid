@@ -285,9 +285,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.05,
     shadowRadius: 10,
-    elevation: 4,
+    // elevation: 4,
   },
   micOuterActive: {
     backgroundColor: '#d2ece7',
