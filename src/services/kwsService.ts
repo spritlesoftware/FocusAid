@@ -16,6 +16,8 @@ const DEFAULT_CONFIG: Omit<TriggerConfig, 'keyword'> = {
   capturePostMs: 3000,
 };
 
+let isListeningState = false;
+
 export async function startKeywordSpotting(keywords: string[], overrides?: Partial<TriggerConfig>) {
   const keywordString = keywords.map(kw => kw.toLowerCase().trim()).join(', ');
   const cfg: TriggerConfig = {
@@ -32,10 +34,16 @@ export async function startKeywordSpotting(keywords: string[], overrides?: Parti
     sherpaModelDir: SHERPA_DIR,
     sampleRate: 16000,
   });
+  isListeningState = true;
 }
 
 export async function stopKeywordSpotting() {
   await hearingModule.stopListening();
+  isListeningState = false;
+}
+
+export function isCurrentlyListening(): boolean {
+  return isListeningState;
 }
 
 export async function updateThreshold(value: number) {

@@ -3,17 +3,17 @@
  *
  * Main screen: shows listening state, last detection, and start/stop control.
  */
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect} from '@react-navigation/native';
-import {startKeywordSpotting, stopKeywordSpotting} from '../services/kwsService';
+import {startKeywordSpotting, stopKeywordSpotting, isCurrentlyListening} from '../services/kwsService';
 import {useDetectionEvents} from '../hooks/useDetectionEvents';
 import {DetectionCard} from '../components/DetectionCard';
 import {initModels, isModelsReady} from '../services/modelManager';
-import {initWhisperEngine} from '../services/whisperService';
+import {initWhisperEngine, releaseWhisper} from '../services/whisperService';
 
 const SETTINGS_KEY = '@hearing_trigger:settings';
 
@@ -24,12 +24,20 @@ export function HomeScreen() {
   const [progress, setProgress] = useState('');
   const [keywords, setKeywords] = useState<string[]>(['test', 'help']);
   const detections              = useDetectionEvents(10);
+  const activeModelRef          = useRef<string>('tiny.en');
 
-  // Load persisted keywords from Settings on every focus
+  // Load persisted settings on focus & detect if model changed
   useFocusEffect(
     useCallback(() => {
-      if (phase === 'listening') return;
-      AsyncStorage.getItem(SETTINGS_KEY).then(raw => {
+      // Sync listening phase with the KWS service state
+      const currentListening = isCurrentlyListening();
+      if (!currentListening && phase === 'listening') {
+        setPhase('ready');
+      }
+
+      if (phase === 'listening' || currentListening) return;
+
+      AsyncStorage.getItem(SETTINGS_KEY).then(async raw => {
         if (!raw) return;
         try {
           const s = JSON.parse(raw);
@@ -38,7 +46,31 @@ export function HomeScreen() {
           } else if (s.keyword) {
             setKeywords([s.keyword]);
           }
-        } catch {}
+
+          const newModel = s.whisperModel || 'tiny.en';
+          if (newModel !== activeModelRef.current) {
+            // Model changed! Release previous, download new if needed, and warm up
+            activeModelRef.current = newModel;
+            setPhase('setup');
+            setProgress('Releasing old model…');
+            await releaseWhisper();
+
+            setProgress('Checking new model…');
+            const ready = await isModelsReady();
+            if (!ready) {
+              await initModels(p => setProgress(`Downloading ${p.file}… ${p.percent}%`));
+            }
+
+            setProgress('Warming up Whisper…');
+            await initWhisperEngine();
+            setPhase('ready');
+            setProgress('');
+          }
+        } catch (err) {
+          console.error(err);
+          setPhase('error');
+          setProgress('Model switch failed.');
+        }
       });
     }, [phase])
   );
@@ -47,6 +79,15 @@ export function HomeScreen() {
   useEffect(() => {
     (async () => {
       try {
+        const raw = await AsyncStorage.getItem(SETTINGS_KEY);
+        if (raw) {
+          try {
+            const s = JSON.parse(raw);
+            if (s.whisperModel) {
+              activeModelRef.current = s.whisperModel;
+            }
+          } catch {}
+        }
         const ready = await isModelsReady();
         if (!ready) {
           await initModels(p => setProgress(`Downloading ${p.file}… ${p.percent}%`));

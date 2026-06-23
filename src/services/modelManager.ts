@@ -8,11 +8,31 @@
  * In production, host these files on your CDN and verify SHA256.
  */
 import RNFS from 'react-native-fs';
-import {WHISPER_BIN, SHERPA_DIR, ensureDirectories} from '../utils/paths';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getActiveWhisperModelPath, getWhisperModelPath, SHERPA_DIR, ensureDirectories} from '../utils/paths';
 
-// Replace with your actual CDN URLs
-const WHISPER_MODEL_URL =
-  'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.en.bin';
+const SETTINGS_KEY = '@hearing_trigger:settings';
+
+export const WHISPER_MODELS = {
+  'tiny.en': {
+    name: 'Whisper tiny.en (~75 MB)',
+    url: 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.en.bin',
+  },
+  'base.en': {
+    name: 'Whisper base.en (~142 MB)',
+    url: 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin',
+  },
+  'small.en': {
+    name: 'Whisper small.en (~466 MB)',
+    url: 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.en.bin',
+  },
+  'medium.en': {
+    name: 'Whisper medium.en (~1.53 GB)',
+    url: 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-medium.en.bin',
+  },
+};
+
+export type WhisperModelKey = keyof typeof WHISPER_MODELS;
 
 const SHERPA_ENCODER_URL =
   'https://github.com/k2-fsa/sherpa-onnx/releases/download/kws-models/sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01-encoder.onnx';
@@ -32,15 +52,32 @@ export async function initModels(
   onProgress?: (p: DownloadProgress) => void,
 ): Promise<void> {
   await ensureDirectories();
-  await maybeDownload(WHISPER_BIN, WHISPER_MODEL_URL, 'Whisper tiny.en', onProgress);
+
+  // Load the active model key from AsyncStorage
+  let modelKey: WhisperModelKey = 'tiny.en';
+  try {
+    const raw = await AsyncStorage.getItem(SETTINGS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.whisperModel && WHISPER_MODELS[parsed.whisperModel as WhisperModelKey]) {
+        modelKey = parsed.whisperModel as WhisperModelKey;
+      }
+    }
+  } catch {}
+
+  const modelInfo = WHISPER_MODELS[modelKey];
+  const whisperPath = getWhisperModelPath(modelKey);
+
+  await maybeDownload(whisperPath, modelInfo.url, modelInfo.name, onProgress);
   await maybeDownload(`${SHERPA_DIR}/encoder.onnx`, SHERPA_ENCODER_URL, 'KWS Encoder', onProgress);
   await maybeDownload(`${SHERPA_DIR}/decoder.onnx`, SHERPA_DECODER_URL, 'KWS Decoder', onProgress);
   await maybeDownload(`${SHERPA_DIR}/tokens.txt`, SHERPA_TOKENS_URL, 'KWS Tokens', onProgress);
 }
 
 export async function isModelsReady(): Promise<boolean> {
+  const whisperPath = await getActiveWhisperModelPath();
   return (
-    (await RNFS.exists(WHISPER_BIN)) &&
+    (await RNFS.exists(whisperPath)) &&
     (await RNFS.exists(`${SHERPA_DIR}/encoder.onnx`)) &&
     (await RNFS.exists(`${SHERPA_DIR}/decoder.onnx`)) &&
     (await RNFS.exists(`${SHERPA_DIR}/tokens.txt`))

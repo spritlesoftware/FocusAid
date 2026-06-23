@@ -8,14 +8,15 @@
  * whisper.rn: https://github.com/mybigday/whisper.rn
  */
 import {initWhisper, WhisperContext} from 'whisper.rn';
-import {WHISPER_BIN} from '../utils/paths';
+import {getActiveWhisperModelPath} from '../utils/paths';
 
 let _ctx: WhisperContext | null = null;
 
 export async function initWhisperEngine(): Promise<WhisperContext> {
   if (_ctx) return _ctx;
+  const whisperPath = await getActiveWhisperModelPath();
   _ctx = await initWhisper({
-    filePath: WHISPER_BIN,
+    filePath: whisperPath,
     // Use CoreML on iOS for faster inference if available
     useCoreMLIos: true,
   });

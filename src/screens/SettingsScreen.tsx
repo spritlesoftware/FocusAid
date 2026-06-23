@@ -16,9 +16,7 @@ import {
   Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { updateThreshold } from "../services/kwsService";
-
-
+import { updateThreshold, stopKeywordSpotting } from "../services/kwsService";
 
 const SETTINGS_KEY = "@hearing_trigger:settings";
 
@@ -29,6 +27,7 @@ export function SettingsScreen() {
   const [cooldown, setCooldown] = useState("6000");
   const [useWhisper, setUseWhisper] = useState(true);
   const [enableDebugLogs, setEnableDebugLogs] = useState(false);
+  const [whisperModel, setWhisperModel] = useState("tiny.en");
 
   // Load persisted settings on mount
   useEffect(() => {
@@ -46,6 +45,7 @@ export function SettingsScreen() {
         if (s.cooldownMs != null) setCooldown(String(s.cooldownMs));
         if (s.useWhisper != null) setUseWhisper(s.useWhisper);
         if (s.enableDebugLogs != null) setEnableDebugLogs(s.enableDebugLogs);
+        if (s.whisperModel != null) setWhisperModel(s.whisperModel);
       } catch {}
     });
   }, []);
@@ -61,16 +61,40 @@ export function SettingsScreen() {
       cooldownMs: parseInt(cooldown, 10) || 6000,
       useWhisper,
       enableDebugLogs,
+      whisperModel,
     };
     await AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(parsed));
     await updateThreshold(parsed.threshold);
+    await stopKeywordSpotting();
     Alert.alert(
       "Saved",
-      "Settings updated. Restart listening to apply keyword changes.",
+      "Settings updated. Listening stopped. Restart listening to apply changes.",
     );
   };
 
+  const saveKeywordsDirectly = async (updatedKeywords: string[]) => {
+    let currentSettings: any = {};
+    try {
+      const raw = await AsyncStorage.getItem(SETTINGS_KEY);
+      if (raw) {
+        currentSettings = JSON.parse(raw);
+      }
+    } catch {}
 
+    const merged = {
+      ...currentSettings,
+      keywords: updatedKeywords.map((w) => w.toLowerCase().trim()),
+      threshold: currentSettings.threshold ?? parseFloat(threshold) ?? 0.5,
+      cooldownMs: currentSettings.cooldownMs ?? parseInt(cooldown, 10) ?? 6000,
+      useWhisper: currentSettings.useWhisper ?? useWhisper,
+      enableDebugLogs: currentSettings.enableDebugLogs ?? enableDebugLogs,
+      whisperModel: currentSettings.whisperModel ?? whisperModel,
+    };
+
+    await AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(merged));
+    await updateThreshold(merged.threshold);
+    await stopKeywordSpotting();
+  };
 
   const addCustomKeyword = () => {
     const val = customInput.toLowerCase().trim();
@@ -86,12 +110,16 @@ export function SettingsScreen() {
       Alert.alert("Too Long", "Trigger words cannot exceed 20 characters.");
       return;
     }
-    setKeywords((prev) => [...prev, val]);
+    const updated = [...keywords, val];
+    setKeywords(updated);
     setCustomInput("");
+    saveKeywordsDirectly(updated);
   };
 
   const removeKeyword = (word: string) => {
-    setKeywords((prev) => prev.filter((w) => w !== word));
+    const updated = keywords.filter((w) => w !== word);
+    setKeywords(updated);
+    saveKeywordsDirectly(updated);
   };
 
   return (
@@ -139,8 +167,6 @@ export function SettingsScreen() {
         </TouchableOpacity>
       </View>
 
-
-
       <Text style={styles.sectionLabel}>Sensitivity Threshold</Text>
       <Text style={styles.hint}>
         0.3 = more sensitive (more false positives). 0.7 = strict (fewer
@@ -149,7 +175,10 @@ export function SettingsScreen() {
       <TextInput
         style={styles.input}
         value={threshold}
-        onChangeText={setThreshold}
+        onChangeText={async (val) => {
+          setThreshold(val);
+          await stopKeywordSpotting();
+        }}
         keyboardType="decimal-pad"
         placeholder="0.5"
       />
@@ -161,7 +190,10 @@ export function SettingsScreen() {
       <TextInput
         style={styles.input}
         value={cooldown}
-        onChangeText={setCooldown}
+        onChangeText={async (val) => {
+          setCooldown(val);
+          await stopKeywordSpotting();
+        }}
         keyboardType="number-pad"
         placeholder="6000"
       />
@@ -176,22 +208,92 @@ export function SettingsScreen() {
         </View>
         <Switch
           value={useWhisper}
-          onValueChange={setUseWhisper}
+          onValueChange={async (val) => {
+            setUseWhisper(val);
+            await stopKeywordSpotting();
+          }}
           thumbColor={useWhisper ? "#01696f" : "#ccc"}
           trackColor={{ true: "#cedcd8", false: "#eee" }}
         />
       </View>
 
+      {useWhisper && (
+        <>
+          <Text style={styles.sectionLabel}>Whisper Model Size</Text>
+          <Text style={styles.hint}>
+            Larger models offer higher transcription accuracy but require more
+            disk space, longer download times, and higher memory/CPU usage.
+          </Text>
+          <View style={styles.chipsContainer}>
+            {(["tiny.en", "base.en", "small.en", "medium.en"] as const).map(
+              (key) => {
+                const isActive = whisperModel === key;
+                let label = "";
+                let size = "";
+                if (key === "tiny.en") {
+                  label = "Tiny";
+                  size = "75 MB";
+                } else if (key === "base.en") {
+                  label = "Base";
+                  size = "142 MB";
+                } else if (key === "small.en") {
+                  label = "Small";
+                  size = "466 MB";
+                } else if (key === "medium.en") {
+                  label = "Medium";
+                  size = "1.53 GB";
+                }
+
+                return (
+                  <TouchableOpacity
+                    key={key}
+                    style={[
+                      styles.modelChip,
+                      isActive && styles.modelChipActive,
+                    ]}
+                    onPress={async () => {
+                      setWhisperModel(key);
+                      await stopKeywordSpotting();
+                    }}
+                  >
+                    <Text
+                      style={[
+                        styles.modelChipText,
+                        isActive && styles.modelChipTextActive,
+                      ]}
+                    >
+                      {label}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.modelSizeText,
+                        isActive && styles.modelSizeTextActive,
+                      ]}
+                    >
+                      {size}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              },
+            )}
+          </View>
+        </>
+      )}
+
       <View style={styles.row}>
         <View style={{ flex: 1 }}>
           <Text style={styles.sectionLabel}>Enable Debug Logs</Text>
           <Text style={styles.hint}>
-            Print key verification and transcription logs (helpful for local debugging).
+            Print key verification and transcription logs (helpful for local
+            debugging).
           </Text>
         </View>
         <Switch
           value={enableDebugLogs}
-          onValueChange={setEnableDebugLogs}
+          onValueChange={async (val) => {
+            setEnableDebugLogs(val);
+            await stopKeywordSpotting();
+          }}
           thumbColor={enableDebugLogs ? "#01696f" : "#ccc"}
           trackColor={{ true: "#cedcd8", false: "#eee" }}
         />
@@ -289,7 +391,7 @@ const styles = StyleSheet.create({
     borderColor: "#d4d1ca",
     marginBottom: 8,
   },
-  row: { flexDirection: "row", alignItems: "center", marginTop: 24 },
+  row: { flexDirection: "row", alignItems: "center", marginTop: 44 },
   saveBtn: {
     backgroundColor: "#01696f",
     borderRadius: 14,
@@ -298,4 +400,71 @@ const styles = StyleSheet.create({
     marginTop: 32,
   },
   saveBtnText: { color: "#fff", fontSize: 17, fontWeight: "700" },
+  chipsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginVertical: 10,
+  },
+  modelChip: {
+    flex: 1,
+    minWidth: "45%",
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: "#d4d1ca",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 8,
+  },
+  modelChipActive: {
+    backgroundColor: "#01696f",
+    borderColor: "#01696f",
+  },
+  modelChipText: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#28251d",
+    marginBottom: 2,
+  },
+  modelChipTextActive: {
+    color: "#fff",
+  },
+  modelSizeText: {
+    fontSize: 12,
+    color: "#7a7974",
+  },
+  modelSizeTextActive: {
+    color: "#cedcd8",
+  },
+  warningBox: {
+    backgroundColor: "#fff0f0",
+    borderColor: "#fcc",
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 12,
+    marginTop: 8,
+    marginBottom: 16,
+  },
+  warningText: {
+    color: "#a33",
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  infoBox: {
+    backgroundColor: "#f0f7ff",
+    borderColor: "#cce5ff",
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 12,
+    marginTop: 8,
+    marginBottom: 16,
+  },
+  infoText: {
+    color: "#004085",
+    fontSize: 13,
+    lineHeight: 18,
+  },
 });
