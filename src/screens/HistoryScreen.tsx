@@ -11,6 +11,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {getDetections, clearDetections} from '../services/detectionStore';
 import {DetectionCard} from '../components/DetectionCard';
 import {Detection} from '../types/detection';
+import {COLORS} from '../config/colors';
 
 export function HistoryScreen() {
   const [items, setItems] = useState<Detection[]>([]);
@@ -61,11 +62,11 @@ export function HistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:       {flex: 1, backgroundColor: '#f7f6f2'},
+  root:       {flex: 1, backgroundColor: COLORS.neutral},
   list:       {padding: 16, paddingBottom: 40},
   clearBtn:   {alignSelf: 'flex-end', margin: 16, marginBottom: 0},
-  clearText:  {color: '#a12c7b', fontSize: 14, fontWeight: '600'},
+  clearText:  {color: COLORS.primary, fontSize: 14, fontWeight: '600'},
   empty:      {flex: 1, paddingTop: 80, alignItems: 'center'},
-  emptyTitle: {fontSize: 18, fontWeight: '700', color: '#28251d', marginBottom: 8},
-  emptyHint:  {fontSize: 14, color: '#7a7974', textAlign: 'center', maxWidth: 280},
+  emptyTitle: {fontSize: 18, fontWeight: '700', color: COLORS.tertiary, marginBottom: 8},
+  emptyHint:  {fontSize: 14, color: COLORS.tertiary, textAlign: 'center', maxWidth: 280},
 });

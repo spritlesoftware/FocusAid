@@ -17,6 +17,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { updateThreshold, stopKeywordSpotting } from "../services/kwsService";
+import { COLORS } from "../config/colors";
 
 const SETTINGS_KEY = "@hearing_trigger:settings";
 
@@ -212,8 +213,8 @@ export function SettingsScreen() {
             setUseWhisper(val);
             await stopKeywordSpotting();
           }}
-          thumbColor={useWhisper ? "#01696f" : "#ccc"}
-          trackColor={{ true: "#cedcd8", false: "#eee" }}
+          thumbColor={useWhisper ? COLORS.secondary : COLORS.grayThumb}
+          trackColor={{ true: COLORS.secondaryLight, false: COLORS.grayTrack }}
         />
       </View>
 
@@ -294,8 +295,8 @@ export function SettingsScreen() {
             setEnableDebugLogs(val);
             await stopKeywordSpotting();
           }}
-          thumbColor={enableDebugLogs ? "#01696f" : "#ccc"}
-          trackColor={{ true: "#cedcd8", false: "#eee" }}
+          thumbColor={enableDebugLogs ? COLORS.secondary : COLORS.grayThumb}
+          trackColor={{ true: COLORS.secondaryLight, false: COLORS.grayTrack }}
         />
       </View>
 
@@ -307,18 +308,18 @@ export function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#f7f6f2" },
+  root: { flex: 1, backgroundColor: COLORS.neutral },
   content: { padding: 24, paddingBottom: 48 },
   sectionLabel: {
     fontSize: 13,
     fontWeight: "700",
-    color: "#7a7974",
+    color: COLORS.tertiary,
     textTransform: "uppercase",
     letterSpacing: 1,
     marginBottom: 8,
     marginTop: 24,
   },
-  hint: { fontSize: 14, color: "#7a7974", marginBottom: 12, lineHeight: 20 },
+  hint: { fontSize: 14, color: COLORS.tertiary, marginBottom: 12, lineHeight: 20 },
   activeTagsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -328,32 +329,32 @@ const styles = StyleSheet.create({
   tag: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#e2efeb",
+    backgroundColor: COLORS.secondaryBg,
     borderRadius: 12,
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: "#01696f",
+    borderColor: COLORS.secondary,
   },
-  tagText: { fontSize: 14, color: "#01696f", fontWeight: "600" },
+  tagText: { fontSize: 14, color: COLORS.secondary, fontWeight: "600" },
   tagRemoveBtn: {
     marginLeft: 6,
     width: 18,
     height: 18,
     borderRadius: 9,
-    backgroundColor: "#cbe0da",
+    backgroundColor: COLORS.secondaryLight,
     alignItems: "center",
     justifyContent: "center",
   },
   tagRemoveText: {
     fontSize: 12,
-    color: "#01696f",
+    color: COLORS.secondary,
     fontWeight: "700",
     marginTop: -2,
   },
   noWordsText: {
     fontSize: 14,
-    color: "#bab9b4",
+    color: COLORS.tertiary,
     fontStyle: "italic",
     marginVertical: 8,
   },
@@ -364,42 +365,42 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   addBtn: {
-    backgroundColor: "#01696f",
+    backgroundColor: COLORS.secondary,
     borderRadius: 10,
     paddingVertical: 14,
     paddingHorizontal: 20,
   },
-  addBtnText: { color: "#fff", fontSize: 15, fontWeight: "700" },
+  addBtnText: { color: COLORS.white, fontSize: 15, fontWeight: "700" },
   chips: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 12 },
   chip: {
     borderRadius: 20,
     paddingVertical: 7,
     paddingHorizontal: 14,
-    backgroundColor: "#f3f0ec",
+    backgroundColor: COLORS.grayLight,
     borderWidth: 1,
-    borderColor: "#d4d1ca",
+    borderColor: COLORS.grayBorder,
   },
-  chipActive: { backgroundColor: "#01696f", borderColor: "#01696f" },
-  chipText: { fontSize: 14, color: "#28251d" },
-  chipTextActive: { color: "#fff", fontWeight: "600" },
+  chipActive: { backgroundColor: COLORS.secondary, borderColor: COLORS.secondary },
+  chipText: { fontSize: 14, color: COLORS.tertiary },
+  chipTextActive: { color: COLORS.white, fontWeight: "600" },
   input: {
-    backgroundColor: "#fff",
+    backgroundColor: COLORS.white,
     borderRadius: 10,
     padding: 14,
     fontSize: 15,
     borderWidth: 1,
-    borderColor: "#d4d1ca",
+    borderColor: COLORS.grayBorder,
     marginBottom: 8,
   },
   row: { flexDirection: "row", alignItems: "center", marginTop: 44 },
   saveBtn: {
-    backgroundColor: "#01696f",
+    backgroundColor: COLORS.primary,
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: "center",
     marginTop: 32,
   },
-  saveBtnText: { color: "#fff", fontSize: 17, fontWeight: "700" },
+  saveBtnText: { color: COLORS.white, fontSize: 17, fontWeight: "700" },
   chipsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -409,39 +410,39 @@ const styles = StyleSheet.create({
   modelChip: {
     flex: 1,
     minWidth: "45%",
-    backgroundColor: "#fff",
+    backgroundColor: COLORS.white,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderWidth: 1,
-    borderColor: "#d4d1ca",
+    borderColor: COLORS.grayBorder,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 8,
   },
   modelChipActive: {
-    backgroundColor: "#01696f",
-    borderColor: "#01696f",
+    backgroundColor: COLORS.secondary,
+    borderColor: COLORS.secondary,
   },
   modelChipText: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#28251d",
+    color: COLORS.tertiary,
     marginBottom: 2,
   },
   modelChipTextActive: {
-    color: "#fff",
+    color: COLORS.white,
   },
   modelSizeText: {
     fontSize: 12,
-    color: "#7a7974",
+    color: COLORS.tertiary,
   },
   modelSizeTextActive: {
-    color: "#cedcd8",
+    color: COLORS.secondaryBg,
   },
   warningBox: {
-    backgroundColor: "#fff0f0",
-    borderColor: "#fcc",
+    backgroundColor: COLORS.primaryBg,
+    borderColor: COLORS.primaryBorder,
     borderWidth: 1,
     borderRadius: 10,
     padding: 12,
@@ -449,13 +450,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   warningText: {
-    color: "#a33",
+    color: COLORS.primary,
     fontSize: 13,
     lineHeight: 18,
   },
   infoBox: {
-    backgroundColor: "#f0f7ff",
-    borderColor: "#cce5ff",
+    backgroundColor: COLORS.secondaryLightBg,
+    borderColor: COLORS.secondaryLight,
     borderWidth: 1,
     borderRadius: 10,
     padding: 12,
@@ -463,7 +464,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   infoText: {
-    color: "#004085",
+    color: COLORS.secondary,
     fontSize: 13,
     lineHeight: 18,
   },

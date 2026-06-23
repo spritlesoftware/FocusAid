@@ -11,6 +11,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Detection } from "../types/detection";
+import { COLORS } from "../config/colors";
 
 interface Props {
   item: Detection;
@@ -40,7 +41,7 @@ export function DetectionCard({ item }: Props) {
             item.confirmed ? styles.badgeOk : styles.badgeLow,
           ]}
         >
-          <Text style={styles.badgeText}>
+          <Text style={[styles.badgeText, { color: item.confirmed ? COLORS.secondary : COLORS.primary }]}>
             {item.confirmed ? "confirmed" : "low confidence"}
           </Text>
         </View>
@@ -71,13 +72,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 4,
   },
-  keyword: { fontSize: 17, fontWeight: "700", color: "#28251d" },
+  keyword: { fontSize: 17, fontWeight: "700", color: COLORS.tertiary },
   badge: { borderRadius: 20, paddingVertical: 2, paddingHorizontal: 10 },
-  badgeOk: { backgroundColor: "#d4dfcc" },
-  badgeLow: { backgroundColor: "#e0ced7" },
-  badgeText: { fontSize: 12, color: "#28251d" },
-  meta: { fontSize: 13, color: "#7a7974", marginBottom: 8 },
-  transcript: { fontSize: 14, color: "#28251d", fontStyle: "italic" },
-  transcriptPending: { fontSize: 13, color: "#bab9b4", fontStyle: "italic" },
-  transcriptNone: { fontSize: 13, color: "#c5a080", fontStyle: "italic" },
+  badgeOk: { backgroundColor: COLORS.secondaryBg },
+  badgeLow: { backgroundColor: COLORS.primaryLightBg },
+  badgeText: { fontSize: 12, fontWeight: "600" },
+  meta: { fontSize: 13, color: COLORS.tertiary, marginBottom: 8 },
+  transcript: { fontSize: 14, color: COLORS.tertiary, fontStyle: "italic" },
+  transcriptPending: { fontSize: 13, color: COLORS.tertiary, fontStyle: "italic", opacity: 0.6 },
+  transcriptNone: { fontSize: 13, color: COLORS.primary, fontStyle: "italic" },
 });

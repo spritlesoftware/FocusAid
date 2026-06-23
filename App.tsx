@@ -17,6 +17,7 @@ import {SettingsScreen} from './src/screens/SettingsScreen';
 import {HistoryScreen}  from './src/screens/HistoryScreen';
 import {PermissionGate} from './src/components/PermissionGate';
 import {startAudioBridge} from './src/services/audioBridge';
+import {COLORS} from './src/config/colors';
 
 const Tab = createBottomTabNavigator();
 
@@ -33,16 +34,16 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle="dark-content" backgroundColor="#f7f6f2" />
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.neutral} />
       <PermissionGate>
         <NavigationContainer>
           <Tab.Navigator
             screenOptions={({route}) => ({
-              headerStyle: {backgroundColor: '#f7f6f2'},
-              headerTintColor: '#28251d',
-              tabBarStyle: {backgroundColor: '#f9f8f5', borderTopColor: '#dcd9d5'},
-              tabBarActiveTintColor: '#01696f',
-              tabBarInactiveTintColor: '#7a7974',
+              headerStyle: {backgroundColor: COLORS.neutral},
+              headerTintColor: COLORS.tertiary,
+              tabBarStyle: {backgroundColor: COLORS.neutral, borderTopColor: COLORS.grayLight},
+              tabBarActiveTintColor: COLORS.primary,
+              tabBarInactiveTintColor: COLORS.tertiary,
               tabBarIcon: ({focused, color}) => {
                 const icons = TAB_ICONS[route.name] ?? {active: '●', inactive: '○'};
                 return (

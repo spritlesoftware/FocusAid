@@ -14,6 +14,7 @@ import {useDetectionEvents} from '../hooks/useDetectionEvents';
 import {DetectionCard} from '../components/DetectionCard';
 import {initModels, isModelsReady} from '../services/modelManager';
 import {initWhisperEngine, releaseWhisper} from '../services/whisperService';
+import {COLORS} from '../config/colors';
 
 const SETTINGS_KEY = '@hearing_trigger:settings';
 
@@ -154,7 +155,7 @@ export function HomeScreen() {
       {/* Progress during model download */}
       {phase === 'setup' && (
         <View style={styles.setupBox}>
-          <ActivityIndicator color="#01696f" />
+          <ActivityIndicator color={COLORS.primary} />
           <Text style={styles.progressText}>{progress}</Text>
         </View>
       )}
@@ -188,20 +189,20 @@ export function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:         {flex: 1, backgroundColor: '#f7f6f2'},
+  root:         {flex: 1, backgroundColor: COLORS.neutral},
   content:      {padding: 24, paddingBottom: 48},
   statusRow:    {flexDirection: 'row', alignItems: 'center', marginBottom: 24},
   dot:          {width: 12, height: 12, borderRadius: 6, marginRight: 10},
-  dotActive:    {backgroundColor: '#437a22'},
-  dotIdle:      {backgroundColor: '#bab9b4'},
-  statusText:   {fontSize: 16, color: '#28251d', fontWeight: '600'},
+  dotActive:    {backgroundColor: COLORS.secondary},
+  dotIdle:      {backgroundColor: COLORS.tertiary},
+  statusText:   {fontSize: 16, color: COLORS.tertiary, fontWeight: '600'},
   setupBox:     {alignItems: 'center', paddingVertical: 40, gap: 16},
-  progressText: {fontSize: 14, color: '#7a7974', textAlign: 'center'},
+  progressText: {fontSize: 14, color: COLORS.tertiary, textAlign: 'center'},
   mainBtn:      {borderRadius: 14, paddingVertical: 18, alignItems: 'center', marginBottom: 32},
-  mainBtnStart: {backgroundColor: '#01696f'},
-  mainBtnStop:  {backgroundColor: '#a12c7b'},
-  mainBtnText:  {color: '#fff', fontSize: 18, fontWeight: '700'},
-  sectionLabel: {fontSize: 13, fontWeight: '700', color: '#7a7974', textTransform: 'uppercase',
+  mainBtnStart: {backgroundColor: COLORS.secondary},
+  mainBtnStop:  {backgroundColor: COLORS.primary},
+  mainBtnText:  {color: COLORS.white, fontSize: 18, fontWeight: '700'},
+  sectionLabel: {fontSize: 13, fontWeight: '700', color: COLORS.tertiary, textTransform: 'uppercase',
                  letterSpacing: 1, marginBottom: 12},
-  waitText:     {textAlign: 'center', color: '#7a7974', marginTop: 40, fontSize: 15},
+  waitText:     {textAlign: 'center', color: COLORS.tertiary, marginTop: 40, fontSize: 15},
 });
