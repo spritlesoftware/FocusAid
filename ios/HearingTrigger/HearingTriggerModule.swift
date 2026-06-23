@@ -115,6 +115,9 @@ class HearingTriggerModule: RCTEventEmitter {
             mode: .default,
             options: [.allowBluetooth, .allowBluetoothA2DP, .mixWithOthers]
         )
+        if #available(iOS 13.0, *) {
+            try session.setAllowHapticsAndSystemSoundsDuringRecording(true)
+        }
         try session.setPreferredSampleRate(16000)
         try session.setActive(true)
     }
@@ -227,11 +230,6 @@ class HearingTriggerModule: RCTEventEmitter {
     // ─── Clip finalization ────────────────────────────────────────
     private func finalizeDetection(samples: [Int16]) {
         let clipPath = writeWAV(samples: samples)
-
-        // Light haptic — "speech was detected." Full cue fires in audioBridge.ts after keyword confirmed.
-        DispatchQueue.main.async {
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        }
 
         sendEvent(withName: "onKeywordDetected", body: [
             "keyword":   keyword,

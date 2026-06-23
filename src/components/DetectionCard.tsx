@@ -41,14 +41,14 @@ export function DetectionCard({ item }: Props) {
           ]}
         >
           <Text style={styles.badgeText}>
-            {item.confirmed ? "✓ confirmed" : "low confidence"}
+            {item.confirmed ? "confirmed" : "low confidence"}
           </Text>
         </View>
       </View>
       <Text style={styles.meta}>
         {time} · {pct}% confidence
       </Text>
-      {/* transcriptNode */}
+      {transcriptNode}
     </View>
   );
 }

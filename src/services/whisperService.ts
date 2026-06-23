@@ -17,7 +17,7 @@ export async function initWhisperEngine(): Promise<WhisperContext> {
   _ctx = await initWhisper({
     filePath: WHISPER_BIN,
     // Use CoreML on iOS for faster inference if available
-    isCoreMLEnabled: true,
+    useCoreMLIos: true,
   });
   return _ctx;
 }
@@ -34,7 +34,6 @@ export async function transcribeClip(audioPath: string): Promise<string> {
     tokenTimestamps: false,
     // Best performance for short clips
     beamSize: 1,
-    entropyThold: 2.4,
     temperature: 0,
   });
   const {result} = await promise;

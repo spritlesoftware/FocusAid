@@ -25,10 +25,10 @@ export async function clearDetections(): Promise<void> {
   await AsyncStorage.removeItem(STORAGE_KEY);
 }
 
-export async function updateDetectionTranscript(id: string, transcript: string): Promise<void> {
+export async function updateDetectionTranscript(id: string, transcript: string, confirmed: boolean): Promise<void> {
   const items = await getDetections();
   const updated = items.map(d =>
-    d.id === id ? {...d, transcript, confirmed: transcript.length > 2} : d,
+    d.id === id ? {...d, transcript, confirmed} : d,
   );
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
 }

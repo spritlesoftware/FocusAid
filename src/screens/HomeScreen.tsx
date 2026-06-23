@@ -3,11 +3,12 @@
  *
  * Main screen: shows listening state, last detection, and start/stop control.
  */
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useFocusEffect} from '@react-navigation/native';
 import {startKeywordSpotting, stopKeywordSpotting} from '../services/kwsService';
 import {useDetectionEvents} from '../hooks/useDetectionEvents';
 import {DetectionCard} from '../components/DetectionCard';
@@ -21,19 +22,26 @@ type Phase = 'setup' | 'ready' | 'listening' | 'error';
 export function HomeScreen() {
   const [phase, setPhase]       = useState<Phase>('setup');
   const [progress, setProgress] = useState('');
-  const [keyword, setKeyword]   = useState('priya');
+  const [keywords, setKeywords] = useState<string[]>(['priya']);
   const detections              = useDetectionEvents(10);
 
-  // Load persisted keyword from Settings on every focus
-  useEffect(() => {
-    AsyncStorage.getItem(SETTINGS_KEY).then(raw => {
-      if (!raw) return;
-      try {
-        const s = JSON.parse(raw);
-        if (s.keyword) setKeyword(s.keyword);
-      } catch {}
-    });
-  }, []);
+  // Load persisted keywords from Settings on every focus
+  useFocusEffect(
+    useCallback(() => {
+      if (phase === 'listening') return;
+      AsyncStorage.getItem(SETTINGS_KEY).then(raw => {
+        if (!raw) return;
+        try {
+          const s = JSON.parse(raw);
+          if (s.keywords) {
+            setKeywords(s.keywords);
+          } else if (s.keyword) {
+            setKeywords([s.keyword]);
+          }
+        } catch {}
+      });
+    }, [phase])
+  );
 
   // Download + warm models on mount
   useEffect(() => {
@@ -59,15 +67,35 @@ export function HomeScreen() {
     if (phase === 'listening') {
       await stopKeywordSpotting();
       setPhase('ready');
-    } else if (phase === 'ready') {
-      // Re-read keyword in case Settings changed while we were on another tab
+      // Load latest keywords from storage since we just stopped
       const raw = await AsyncStorage.getItem(SETTINGS_KEY);
-      const kw  = raw ? (JSON.parse(raw).keyword ?? keyword) : keyword;
-      setKeyword(kw);
-      await startKeywordSpotting(kw);
+      if (raw) {
+        try {
+          const s = JSON.parse(raw);
+          if (s.keywords) {
+            setKeywords(s.keywords);
+          } else if (s.keyword) {
+            setKeywords([s.keyword]);
+          }
+        } catch {}
+      }
+    } else if (phase === 'ready') {
+      // Re-read keywords in case Settings changed while we were on another tab
+      const raw = await AsyncStorage.getItem(SETTINGS_KEY);
+      let kws = keywords;
+      if (raw) {
+        try {
+          const s = JSON.parse(raw);
+          kws = s.keywords || (s.keyword ? [s.keyword] : keywords);
+        } catch {}
+      }
+      setKeywords(kws);
+      await startKeywordSpotting(kws);
       setPhase('listening');
     }
   };
+
+  const keywordsString = keywords.join(', ');
 
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.content}>
@@ -77,7 +105,7 @@ export function HomeScreen() {
         <Text style={styles.statusText}>
           {phase === 'setup'     && 'Preparing models…'}
           {phase === 'ready'     && 'Ready'}
-          {phase === 'listening' && `Listening for "${keyword}"`}
+          {phase === 'listening' && `Listening for "${keywordsString}"`}
           {phase === 'error'     && 'Setup error'}
         </Text>
       </View>
@@ -111,7 +139,7 @@ export function HomeScreen() {
 
       {phase === 'listening' && detections.length === 0 && (
         <Text style={styles.waitText}>
-          Waiting to hear "{keyword}"…
+          Waiting to hear "{keywordsString}"…
         </Text>
       )}
     </ScrollView>

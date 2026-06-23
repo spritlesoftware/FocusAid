@@ -16,11 +16,12 @@ const DEFAULT_CONFIG: Omit<TriggerConfig, 'keyword'> = {
   capturePostMs: 3000,
 };
 
-export async function startKeywordSpotting(keyword: string, overrides?: Partial<TriggerConfig>) {
+export async function startKeywordSpotting(keywords: string[], overrides?: Partial<TriggerConfig>) {
+  const keywordString = keywords.map(kw => kw.toLowerCase().trim()).join(', ');
   const cfg: TriggerConfig = {
     ...DEFAULT_CONFIG,
     ...overrides,
-    keyword: keyword.toLowerCase().trim(),
+    keyword: keywordString,
   };
 
   await hearingModule.startListening({

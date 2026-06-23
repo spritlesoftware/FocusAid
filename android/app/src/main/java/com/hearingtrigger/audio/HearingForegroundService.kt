@@ -90,6 +90,7 @@ class HearingForegroundService : Service() {
 
     // ─── Audio capture ────────────────────────────────────────────
     private fun startCapture() {
+        if (running) return
         val minBuf = AudioRecord.getMinBufferSize(
             SAMPLE_RATE, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT
         )
@@ -123,39 +124,41 @@ class HearingForegroundService : Service() {
         val rms = computeRms(frame, read)
         val now = System.currentTimeMillis()
 
-        if (!isRecording) {
-            // Maintain a rolling pre-roll buffer so we don't clip the speech onset
-            for (i in 0 until read) preRollDeque.addLast(frame[i])
-            while (preRollDeque.size > PRE_ROLL_SAMPLES) preRollDeque.removeFirst()
+        synchronized(recordedSamples) {
+            if (!isRecording) {
+                // Maintain a rolling pre-roll buffer so we don't clip the speech onset
+                for (i in 0 until read) preRollDeque.addLast(frame[i])
+                while (preRollDeque.size > PRE_ROLL_SAMPLES) preRollDeque.removeFirst()
 
-            if (rms > ENERGY_THRESHOLD) {
-                if (speechOnsetAt == 0L) speechOnsetAt = now
+                if (rms > ENERGY_THRESHOLD) {
+                    if (speechOnsetAt == 0L) speechOnsetAt = now
 
-                // Speech sustained long enough AND cooldown elapsed → start recording
-                if (now - speechOnsetAt >= MIN_SPEECH_MS && now - lastDetectAt >= cooldownMs) {
-                    lastDetectAt    = now
-                    isRecording     = true
-                    recordingStartAt = now
-                    recordedSamples.clear()
-                    recordedSamples.addAll(preRollDeque)   // include pre-roll
-                    for (i in 0 until read) recordedSamples.add(frame[i])
+                    // Speech sustained long enough AND cooldown elapsed → start recording
+                    if (now - speechOnsetAt >= MIN_SPEECH_MS && now - lastDetectAt >= cooldownMs) {
+                        lastDetectAt    = now
+                        isRecording     = true
+                        recordingStartAt = now
+                        recordedSamples.clear()
+                        recordedSamples.addAll(preRollDeque)   // include pre-roll
+                        for (i in 0 until read) recordedSamples.add(frame[i])
+                    }
+                } else {
+                    speechOnsetAt = 0L
                 }
             } else {
-                speechOnsetAt = 0L
-            }
-        } else {
-            // Accumulate post-trigger audio
-            for (i in 0 until read) recordedSamples.add(frame[i])
+                // Accumulate post-trigger audio
+                for (i in 0 until read) recordedSamples.add(frame[i])
 
-            if (now - recordingStartAt >= capturePostMs) {
-                val samples = recordedSamples.toShortArray()
-                recordedSamples.clear()
-                isRecording   = false
-                speechOnsetAt = 0L
-                preRollDeque.clear()
+                if (now - recordingStartAt >= capturePostMs) {
+                    val samples = recordedSamples.toShortArray()
+                    recordedSamples.clear()
+                    isRecording   = false
+                    speechOnsetAt = 0L
+                    preRollDeque.clear()
 
-                // Run clip finalization off the capture thread
-                Handler(Looper.getMainLooper()).post { finalizeDetection(samples) }
+                    // Run clip finalization off the capture thread
+                    Handler(Looper.getMainLooper()).post { finalizeDetection(samples) }
+                }
             }
         }
     }
@@ -163,9 +166,6 @@ class HearingForegroundService : Service() {
     // ─── Clip finalization + event emit ──────────────────────────
     private fun finalizeDetection(samples: ShortArray) {
         val clipPath = writeWav(samples)
-        // Vibrate immediately as a low-latency "speech detected" cue;
-        // the stronger alert fires in audioBridge.ts after Whisper confirms the keyword.
-        vibrateShort()
         moduleRef?.emitDetection(keyword, 0.7, clipPath)
     }
 
