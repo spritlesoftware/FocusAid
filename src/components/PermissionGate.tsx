@@ -3,47 +3,202 @@
  *
  * Shows a prompt if microphone permission is not granted.
  */
-import React, {useEffect} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {usePermissions} from '../hooks/usePermissions';
-import {COLORS} from '../config/colors';
+import React, { useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import { usePermissions } from '../hooks/usePermissions';
+import { COLORS } from '../config/colors';
+import { MicIcon } from './Icons';
 
 interface Props {
   children: React.ReactNode;
 }
 
-export function PermissionGate({children}: Props) {
-  const {micStatus, checkMic, requestMic} = usePermissions();
+// Minimal CSS ear logo drawing
+function EarIcon({ color = COLORS.primary, size = 16 }) {
+  return (
+    <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{
+        width: size * 0.75,
+        height: size * 0.95,
+        borderRadius: size * 0.4,
+        borderWidth: 2,
+        borderColor: color,
+        borderRightWidth: 0,
+        transform: [{ rotate: '-15deg' }],
+        backgroundColor: 'transparent',
+      }} />
+      <View style={{
+        width: size * 0.35,
+        height: size * 0.5,
+        borderRadius: size * 0.2,
+        borderWidth: 1.5,
+        borderColor: color,
+        borderLeftWidth: 0,
+        position: 'absolute',
+        right: size * 0.1,
+        top: size * 0.22,
+        backgroundColor: 'transparent',
+      }} />
+    </View>
+  );
+}
 
-  useEffect(() => { checkMic(); }, [checkMic]);
+export function PermissionGate({ children }: Props) {
+  const { micStatus, checkMic, requestMic } = usePermissions();
+
+  useEffect(() => {
+    checkMic();
+  }, [checkMic]);
 
   if (micStatus === 'granted') return <>{children}</>;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Microphone Access Required</Text>
-      <Text style={styles.body}>
-        This app listens locally for your trigger word. Audio is never sent to
-        any server.
-      </Text>
-      {micStatus === 'blocked' ? (
-        <Text style={styles.hint}>
-          Microphone access is blocked. Please enable it in your device Settings.
+      {/* Top Brand Logo */}
+      <View style={styles.brandRow}>
+        <View style={styles.brandBox}>
+          <EarIcon color={COLORS.primary} size={20} />
+        </View>
+        <Text style={styles.brandText}>Focus Aid</Text>
+      </View>
+
+      {/* Center Content */}
+      <View style={styles.centerContent}>
+        <View style={styles.micCircle}>
+          <MicIcon size={40} color={COLORS.primary} />
+        </View>
+
+        <Text style={styles.title}>Microphone Access Required</Text>
+
+        <Text style={styles.body}>
+          This app listens locally for your trigger word. Audio is never sent to any server.
         </Text>
-      ) : (
-        <TouchableOpacity style={styles.button} onPress={requestMic}>
-          <Text style={styles.buttonText}>Grant Microphone Access</Text>
-        </TouchableOpacity>
-      )}
+
+        {micStatus === 'blocked' && (
+          <Text style={styles.warningHint}>
+            Microphone access is blocked. Please enable it in your device settings to continue.
+          </Text>
+        )}
+      </View>
+
+      {/* Bottom Button Container */}
+      <View style={styles.buttonContainer}>
+        {micStatus === 'blocked' ? (
+          <TouchableOpacity style={styles.button} onPress={() => Linking.openSettings()}>
+            <Text style={styles.buttonText}>Open Device Settings</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={requestMic}>
+            <Text style={styles.buttonText}>Grant Microphone Access</Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {flex: 1, justifyContent: 'center', alignItems: 'center', padding: 32, backgroundColor: COLORS.neutral},
-  title:     {fontSize: 22, fontWeight: '700', marginBottom: 16, textAlign: 'center', color: COLORS.tertiary},
-  body:      {fontSize: 15, color: COLORS.tertiary, textAlign: 'center', marginBottom: 24, maxWidth: 320},
-  hint:      {fontSize: 14, color: COLORS.primary, textAlign: 'center'},
-  button:    {backgroundColor: COLORS.primary, paddingVertical: 14, paddingHorizontal: 32, borderRadius: 12},
-  buttonText:{color: COLORS.white, fontSize: 16, fontWeight: '600'},
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 24,
+    paddingTop: 60,
+    paddingBottom: 40,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  brandBox: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: COLORS.primaryBorder,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  brandText: {
+    fontSize: 25,
+    fontWeight: '700',
+    color: COLORS.primary,
+    marginLeft: 8,
+  },
+  centerContent: {
+    flex: 1,
+    alignItems: 'center',
+    // justifyContent: 'center',
+    paddingTop: 90,
+    paddingHorizontal: 16,
+  },
+  micCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: COLORS.primaryBg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 32,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#1F2937',
+    textAlign: 'center',
+    marginBottom: 12,
+    lineHeight: 32,
+  },
+  body: {
+    fontSize: 15,
+    color: '#6B7280',
+    textAlign: 'center',
+    lineHeight: 22,
+    maxWidth: 290,
+  },
+  warningHint: {
+    fontSize: 14,
+    color: '#EF4444',
+    textAlign: 'center',
+    fontWeight: '600',
+    marginTop: 20,
+    lineHeight: 20,
+    maxWidth: 280,
+  },
+  buttonContainer: {
+    width: '100%',
+    paddingHorizontal: 8,
+  },
+  button: {
+    backgroundColor: COLORS.primary,
+    width: '100%',
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
+  },
 });

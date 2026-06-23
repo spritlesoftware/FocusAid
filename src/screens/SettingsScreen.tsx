@@ -17,9 +17,218 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { updateThreshold, stopKeywordSpotting } from "../services/kwsService";
+import { clearDetections } from "../services/detectionStore";
 import { COLORS } from "../config/colors";
 
 const SETTINGS_KEY = "@hearing_trigger:settings";
+const PRESET_KEYWORDS = ["priya", "aarav", "grandma", "mom", "dad", "help"];
+
+import {
+  KeyIcon,
+  GearIcon as VolumeIcon, // We can map GearIcon/VolumeIcon appropriately
+  ClockIcon,
+  MessageSquareIcon,
+  ListIcon,
+  TrashIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
+} from "../components/Icons";
+
+interface IconProps {
+  name: string;
+  size?: number;
+  color?: string;
+  style?: any;
+}
+
+function Icon({ name, size = 18, color = "#9D2B7A", style }: IconProps) {
+  if (name === "key") return <KeyIcon size={size} color={color} style={style} />;
+  // Note: For volume/sensitivity we will use the custom styled SpeakerIcon inside Icons.tsx which was named VolumeIcon
+  if (name === "volume-2") return <VolumeIcon size={size} color={color} style={style} />;
+  if (name === "clock") return <ClockIcon size={size} color={color} style={style} />;
+  if (name === "message-square") return <MessageSquareIcon size={size} color={color} style={style} />;
+  if (name === "list") return <ListIcon size={size} color={color} style={style} />;
+  if (name === "trash-2") return <TrashIcon size={size} color={color} style={style} />;
+  if (name === "chevron-up") return <ChevronUpIcon size={size} color={color} style={style} />;
+  if (name === "chevron-down") return <ChevronDownIcon size={size} color={color} style={style} />;
+  return null;
+}
+// Custom Slider component using parent touch responder to avoid jumpiness
+interface SensitivitySliderProps {
+  value: number;
+  onChange: (val: number) => void;
+  onComplete: (val: number) => void;
+}
+
+function SensitivitySlider({ value, onChange, onComplete }: SensitivitySliderProps) {
+  const min = 0.3;
+  const max = 0.7;
+  const [width, setWidth] = useState(0);
+
+  const getPercent = (val: number) => {
+    return (val - min) / (max - min);
+  };
+
+  const handleTouch = (locationX: number, isRelease = false) => {
+    if (width <= 0) return;
+    const pct = Math.max(0, Math.min(1, locationX / width));
+    const newVal = min + pct * (max - min);
+    const roundedVal = Math.round(newVal * 10) / 10;
+    onChange(roundedVal);
+    if (isRelease) {
+      onComplete(roundedVal);
+    }
+  };
+
+  const percent = getPercent(value);
+
+  return (
+    <View
+      style={sliderStyles.container}
+      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
+      onStartShouldSetResponder={() => true}
+      onMoveShouldSetResponder={() => true}
+      onResponderGrant={(evt) => handleTouch(evt.nativeEvent.locationX)}
+      onResponderMove={(evt) => handleTouch(evt.nativeEvent.locationX)}
+      onResponderRelease={(evt) => handleTouch(evt.nativeEvent.locationX, true)}
+    >
+      <View style={sliderStyles.track} pointerEvents="none" />
+      <View
+        style={[
+          sliderStyles.activeTrack,
+          { width: `${percent * 100}%` }
+        ]}
+        pointerEvents="none"
+      />
+      <View
+        style={[
+          sliderStyles.thumb,
+          { left: percent * width - 12 }
+        ]}
+        pointerEvents="none"
+      />
+    </View>
+  );
+}
+
+const sliderStyles = StyleSheet.create({
+  container: {
+    height: 32,
+    justifyContent: "center",
+    position: "relative",
+    width: "100%",
+    marginVertical: 12,
+  },
+  track: {
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#E5E7EB",
+    width: "100%",
+    position: "absolute",
+    top: 13,
+  },
+  activeTrack: {
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: COLORS.primary,
+    position: "absolute",
+    left: 0,
+    top: 13,
+  },
+  thumb: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: COLORS.primary,
+    position: "absolute",
+    top: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+});
+
+// Custom Stepper component
+interface CooldownStepperProps {
+  value: number;
+  onChange: (val: number) => void;
+}
+
+function CooldownStepper({ value, onChange }: CooldownStepperProps) {
+  const handleIncrement = () => {
+    onChange(value + 1);
+  };
+
+  const handleDecrement = () => {
+    if (value > 1) {
+      onChange(value - 1);
+    }
+  };
+
+  return (
+    <View style={stepperStyles.container}>
+      <TextInput
+        style={stepperStyles.input}
+        value={String(value)}
+        onChangeText={(text) => {
+          const parsed = parseInt(text, 10);
+          if (!isNaN(parsed)) {
+            onChange(parsed);
+          } else if (text === "") {
+            onChange(0);
+          }
+        }}
+        keyboardType="number-pad"
+      />
+      <View style={stepperStyles.buttons}>
+        <TouchableOpacity style={stepperStyles.btn} onPress={handleIncrement}>
+          <Icon name="chevron-up" size={14} color={COLORS.primary} />
+        </TouchableOpacity>
+        <TouchableOpacity style={stepperStyles.btn} onPress={handleDecrement}>
+          <Icon name="chevron-down" size={14} color={COLORS.primary} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}
+
+const stepperStyles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: COLORS.primaryBorder,
+    borderRadius: 10,
+    width: 120,
+    height: 48,
+    paddingHorizontal: 12,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: "600",
+    color: COLORS.tertiary,
+    paddingVertical: 0,
+  },
+  buttons: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: "100%",
+    paddingVertical: 4,
+    borderLeftWidth: 1,
+    borderLeftColor: "#F3F4F6",
+    paddingLeft: 8,
+  },
+  btn: {
+    paddingVertical: 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 
 export function SettingsScreen() {
   const [keywords, setKeywords] = useState<string[]>(["test", "help"]);
@@ -39,7 +248,6 @@ export function SettingsScreen() {
         if (s.keywords) {
           setKeywords(s.keywords);
         } else if (s.keyword) {
-          // Migration from single keyword string to keywords array
           setKeywords([s.keyword]);
         }
         if (s.threshold != null) setThreshold(String(s.threshold));
@@ -47,49 +255,38 @@ export function SettingsScreen() {
         if (s.useWhisper != null) setUseWhisper(s.useWhisper);
         if (s.enableDebugLogs != null) setEnableDebugLogs(s.enableDebugLogs);
         if (s.whisperModel != null) setWhisperModel(s.whisperModel);
-      } catch {}
+      } catch { }
     });
   }, []);
 
-  const saveSettings = async () => {
-    if (keywords.length === 0) {
-      Alert.alert("Error", "Please add at least one trigger word.");
-      return;
-    }
-    const parsed = {
-      keywords: keywords.map((w) => w.toLowerCase().trim()),
-      threshold: parseFloat(threshold) || 0.5,
-      cooldownMs: parseInt(cooldown, 10) || 6000,
-      useWhisper,
-      enableDebugLogs,
-      whisperModel,
-    };
-    await AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(parsed));
-    await updateThreshold(parsed.threshold);
-    await stopKeywordSpotting();
-    Alert.alert(
-      "Saved",
-      "Settings updated. Listening stopped. Restart listening to apply changes.",
-    );
-  };
-
-  const saveKeywordsDirectly = async (updatedKeywords: string[]) => {
+  const autoSaveSettings = async (updates: {
+    keywords?: string[];
+    threshold?: string;
+    cooldown?: string;
+    useWhisper?: boolean;
+    enableDebugLogs?: boolean;
+    whisperModel?: string;
+  }) => {
     let currentSettings: any = {};
     try {
       const raw = await AsyncStorage.getItem(SETTINGS_KEY);
-      if (raw) {
-        currentSettings = JSON.parse(raw);
-      }
-    } catch {}
+      if (raw) currentSettings = JSON.parse(raw);
+    } catch { }
+
+    const kws = updates.keywords !== undefined ? updates.keywords : keywords;
+    const thresh = updates.threshold !== undefined ? updates.threshold : threshold;
+    const cool = updates.cooldown !== undefined ? updates.cooldown : cooldown;
+    const whisper = updates.useWhisper !== undefined ? updates.useWhisper : useWhisper;
+    const debug = updates.enableDebugLogs !== undefined ? updates.enableDebugLogs : enableDebugLogs;
+    const model = updates.whisperModel !== undefined ? updates.whisperModel : whisperModel;
 
     const merged = {
-      ...currentSettings,
-      keywords: updatedKeywords.map((w) => w.toLowerCase().trim()),
-      threshold: currentSettings.threshold ?? parseFloat(threshold) ?? 0.5,
-      cooldownMs: currentSettings.cooldownMs ?? parseInt(cooldown, 10) ?? 6000,
-      useWhisper: currentSettings.useWhisper ?? useWhisper,
-      enableDebugLogs: currentSettings.enableDebugLogs ?? enableDebugLogs,
-      whisperModel: currentSettings.whisperModel ?? whisperModel,
+      keywords: kws.map((w) => w.toLowerCase().trim()),
+      threshold: parseFloat(thresh) || 0.5,
+      cooldownMs: parseInt(cool, 10) || 6000,
+      useWhisper: whisper,
+      enableDebugLogs: debug,
+      whisperModel: model,
     };
 
     await AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(merged));
@@ -114,358 +311,549 @@ export function SettingsScreen() {
     const updated = [...keywords, val];
     setKeywords(updated);
     setCustomInput("");
-    saveKeywordsDirectly(updated);
+    autoSaveSettings({ keywords: updated });
   };
 
-  const removeKeyword = (word: string) => {
-    const updated = keywords.filter((w) => w !== word);
+  const toggleKeyword = (word: string) => {
+    let updated: string[];
+    if (keywords.includes(word)) {
+      updated = keywords.filter((w) => w !== word);
+    } else {
+      updated = [...keywords, word];
+    }
+    if (updated.length === 0) {
+      Alert.alert("Error", "Please keep at least one trigger word active.");
+      return;
+    }
     setKeywords(updated);
-    saveKeywordsDirectly(updated);
+    autoSaveSettings({ keywords: updated });
   };
+
+  const handleSliderComplete = async (val: number) => {
+    setThreshold(String(val));
+    await autoSaveSettings({ threshold: String(val) });
+  };
+
+  const handleCooldownChange = async (val: number) => {
+    const ms = val * 1000;
+    setCooldown(String(ms));
+    await autoSaveSettings({ cooldown: String(ms) });
+  };
+
+  const handleWhisperToggle = async (val: boolean) => {
+    setUseWhisper(val);
+    await autoSaveSettings({ useWhisper: val });
+  };
+
+  const handleModelChange = async (model: string) => {
+    setWhisperModel(model);
+    await autoSaveSettings({ whisperModel: model });
+  };
+
+  const handleDebugLogsToggle = async (val: boolean) => {
+    setEnableDebugLogs(val);
+    await autoSaveSettings({ enableDebugLogs: val });
+  };
+
+  const handleClearAll = () => {
+    Alert.alert(
+      "Clear All History & Settings",
+      "Delete all detection history and restore settings to defaults?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Clear",
+          style: "destructive",
+          onPress: async () => {
+            await clearDetections();
+            await AsyncStorage.removeItem(SETTINGS_KEY);
+            setKeywords(["help"]);
+            setThreshold("0.5");
+            setCooldown("6000");
+            setUseWhisper(true);
+            setWhisperModel("tiny.en");
+            setEnableDebugLogs(false);
+            await updateThreshold(0.5);
+            await stopKeywordSpotting();
+          },
+        },
+      ]
+    );
+  };
+
+  const displayChips = Array.from(
+    new Set([...PRESET_KEYWORDS, ...keywords])
+  );
 
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.content}>
-      <Text style={styles.sectionLabel}>Active Trigger Words</Text>
-      <Text style={styles.hint}>
-        Your device will listen for these words. Tap the "×" on a tag to remove
-        it.
-      </Text>
-
-      {/* Active tags container */}
-      <View style={styles.activeTagsContainer}>
-        {keywords.map((w) => (
-          <View key={w} style={styles.tag}>
-            <Text style={styles.tagText}>{w}</Text>
-            <TouchableOpacity
-              onPress={() => removeKeyword(w)}
-              style={styles.tagRemoveBtn}
-            >
-              <Text style={styles.tagRemoveText}>×</Text>
-            </TouchableOpacity>
+      {/* 1. Trigger Word Card */}
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={[styles.iconContainer, { backgroundColor: COLORS.primaryBg }]}>
+            <Icon name="key" size={18} color={COLORS.primary} />
           </View>
-        ))}
-        {keywords.length === 0 && (
-          <Text style={styles.noWordsText}>
-            No active trigger words. Select or add one below.
-          </Text>
+          <Text style={[styles.cardTitle, { flex: 1 }]}>Trigger Word</Text>
+        </View>
+
+        <Text style={styles.cardDescription}>
+          Choose a word that Focus Aid will prioritize for alerts.
+        </Text>
+
+        <View style={styles.chipsContainer}>
+          {displayChips.map((word) => {
+            const isActive = keywords.includes(word);
+            const displayWord = word.charAt(0).toUpperCase() + word.slice(1);
+            return (
+              <TouchableOpacity
+                key={word}
+                style={[
+                  styles.chip,
+                  isActive ? styles.chipActive : styles.chipInactive,
+                ]}
+                onPress={() => toggleKeyword(word)}
+              >
+                <Text
+                  style={[
+                    styles.chipText,
+                    isActive ? styles.chipTextActive : styles.chipTextInactive,
+                  ]}
+                >
+                  {displayWord}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        <Text style={styles.inputLabel}>Custom Trigger Word</Text>
+        <View style={styles.customInputContainer}>
+          <TextInput
+            style={styles.customInput}
+            value={customInput}
+            onChangeText={setCustomInput}
+            placeholder="Type a word..."
+            placeholderTextColor="#9CA3AF"
+            autoCapitalize="none"
+            autoCorrect={false}
+            maxLength={20}
+            onSubmitEditing={addCustomKeyword}
+          />
+          <TouchableOpacity style={styles.addBtn} onPress={addCustomKeyword}>
+            <Text style={styles.addBtnText}>Add</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* 2. Sensitivity Threshold Card */}
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={[styles.iconContainer, { backgroundColor: COLORS.primaryBg }]}>
+            <Icon name="volume-2" size={18} color={COLORS.primary} />
+          </View>
+          <Text style={[styles.cardTitle, { flex: 1 }]}>Sensitivity Threshold</Text>
+        </View>
+
+        <Text style={styles.cardDescription}>
+          Adjust how sensitive the microphone is to background noise.
+        </Text>
+
+        <View style={styles.sliderLabelRow}>
+          <Text style={styles.sliderLabelSide}>Low Sensitivity</Text>
+          <Text style={styles.sliderValueText}>{parseFloat(threshold).toFixed(1)}</Text>
+          <Text style={styles.sliderLabelSide}>High Sensitivity</Text>
+        </View>
+
+        <SensitivitySlider
+          value={parseFloat(threshold) || 0.5}
+          onChange={(val) => setThreshold(String(val))}
+          onComplete={handleSliderComplete}
+        />
+
+        <View style={styles.sliderTicksRow}>
+          <Text style={styles.sliderTickText}>0.3</Text>
+          <Text style={styles.sliderTickText}>0.7</Text>
+        </View>
+      </View>
+
+      {/* 3. Cooldown Period Card */}
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={[styles.iconContainer, { backgroundColor: COLORS.primaryBg }]}>
+            <Icon name="clock" size={18} color={COLORS.primary} />
+          </View>
+          <Text style={[styles.cardTitle, { flex: 1 }]}>Cooldown Period</Text>
+        </View>
+
+        <Text style={styles.cardDescription}>
+          Wait time between repeat alerts for the same word.
+        </Text>
+
+        <Text style={styles.inputLabel}>Seconds</Text>
+        <View style={styles.cooldownRow}>
+          <CooldownStepper
+            value={Math.round((parseInt(cooldown, 10) || 6000) / 1000)}
+            onChange={handleCooldownChange}
+          />
+          <Text style={styles.cooldownRecommended}>Recommended: 38s</Text>
+        </View>
+      </View>
+
+      {/* 4. Transcribe with Whisper Card */}
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={[styles.iconContainer, { backgroundColor: COLORS.primaryLightBg }]}>
+            <Icon name="message-square" size={18} color={COLORS.primary} />
+          </View>
+          <Text style={[styles.cardTitle, { flex: 1 }]}>Transcribe with Whisper</Text>
+          <Switch
+            value={useWhisper}
+            onValueChange={handleWhisperToggle}
+            thumbColor={useWhisper ? COLORS.primary : '#9CA3AF'}
+            trackColor={{ true: COLORS.primaryLightBg, false: "#E5E7EB" }}
+            style={{ marginLeft: 8 }}
+          />
+        </View>
+
+        <Text style={styles.cardDescription}>
+          AI-powered transcription for higher accuracy.
+        </Text>
+
+        {useWhisper && (
+          <View style={styles.whisperModelSection}>
+            <Text style={styles.whisperModelTitle}>Whisper Model Size</Text>
+            <Text style={styles.whisperModelDesc}>
+              Larger models offer higher transcription accuracy but require more disk space, longer download times, and higher memory/CPU usage.
+            </Text>
+            <View style={styles.modelChipsGrid}>
+              <View style={styles.modelChipsRow}>
+                <TouchableOpacity
+                  style={[
+                    styles.modelChip,
+                    whisperModel === "tiny.en" && styles.modelChipActive,
+                  ]}
+                  onPress={() => handleModelChange("tiny.en")}
+                >
+                  <Text style={[styles.modelChipText, whisperModel === "tiny.en" && styles.modelChipTextActive]}>
+                    Tiny
+                  </Text>
+                  <Text style={[styles.modelSizeText, whisperModel === "tiny.en" && styles.modelSizeTextActive]}>
+                    75 MB
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[
+                    styles.modelChip,
+                    whisperModel === "base.en" && styles.modelChipActive,
+                  ]}
+                  onPress={() => handleModelChange("base.en")}
+                >
+                  <Text style={[styles.modelChipText, whisperModel === "base.en" && styles.modelChipTextActive]}>
+                    Base
+                  </Text>
+                  <Text style={[styles.modelSizeText, whisperModel === "base.en" && styles.modelSizeTextActive]}>
+                    142 MB
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.modelChipsRow}>
+                <TouchableOpacity
+                  style={[
+                    styles.modelChip,
+                    whisperModel === "small.en" && styles.modelChipActive,
+                  ]}
+                  onPress={() => handleModelChange("small.en")}
+                >
+                  <Text style={[styles.modelChipText, whisperModel === "small.en" && styles.modelChipTextActive]}>
+                    Small
+                  </Text>
+                  <Text style={[styles.modelSizeText, whisperModel === "small.en" && styles.modelSizeTextActive]}>
+                    466 MB
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[
+                    styles.modelChip,
+                    whisperModel === "medium.en" && styles.modelChipActive,
+                  ]}
+                  onPress={() => handleModelChange("medium.en")}
+                >
+                  <Text style={[styles.modelChipText, whisperModel === "medium.en" && styles.modelChipTextActive]}>
+                    Medium
+                  </Text>
+                  <Text style={[styles.modelSizeText, whisperModel === "medium.en" && styles.modelSizeTextActive]}>
+                    1.53 GB
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
         )}
       </View>
 
-      <Text style={styles.sectionLabel}>Add Custom Word</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={[styles.input, { flex: 1, marginBottom: 0 }]}
-          value={customInput}
-          onChangeText={setCustomInput}
-          placeholder="Type custom word..."
-          autoCapitalize="none"
-          autoCorrect={false}
-          maxLength={20}
-          onSubmitEditing={addCustomKeyword}
-        />
-        <TouchableOpacity style={styles.addBtn} onPress={addCustomKeyword}>
-          <Text style={styles.addBtnText}>Add</Text>
-        </TouchableOpacity>
-      </View>
-
-      <Text style={styles.sectionLabel}>Sensitivity Threshold</Text>
-      <Text style={styles.hint}>
-        0.3 = more sensitive (more false positives). 0.7 = strict (fewer
-        alerts). Default 0.5 is a good start.
-      </Text>
-      <TextInput
-        style={styles.input}
-        value={threshold}
-        onChangeText={async (val) => {
-          setThreshold(val);
-          await stopKeywordSpotting();
-        }}
-        keyboardType="decimal-pad"
-        placeholder="0.5"
-      />
-
-      <Text style={styles.sectionLabel}>Cooldown (ms)</Text>
-      <Text style={styles.hint}>
-        Minimum time between alerts. 6000 ms = one alert per 6 seconds max.
-      </Text>
-      <TextInput
-        style={styles.input}
-        value={cooldown}
-        onChangeText={async (val) => {
-          setCooldown(val);
-          await stopKeywordSpotting();
-        }}
-        keyboardType="number-pad"
-        placeholder="6000"
-      />
-
-      <View style={styles.row}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.sectionLabel}>Transcribe with Whisper</Text>
-          <Text style={styles.hint}>
-            Shows what was said around the trigger word and confirms the
-            keyword.
-          </Text>
-        </View>
-        <Switch
-          value={useWhisper}
-          onValueChange={async (val) => {
-            setUseWhisper(val);
-            await stopKeywordSpotting();
-          }}
-          thumbColor={useWhisper ? COLORS.secondary : COLORS.grayThumb}
-          trackColor={{ true: COLORS.secondaryLight, false: COLORS.grayTrack }}
-        />
-      </View>
-
-      {useWhisper && (
-        <>
-          <Text style={styles.sectionLabel}>Whisper Model Size</Text>
-          <Text style={styles.hint}>
-            Larger models offer higher transcription accuracy but require more
-            disk space, longer download times, and higher memory/CPU usage.
-          </Text>
-          <View style={styles.chipsContainer}>
-            {(["tiny.en", "base.en", "small.en", "medium.en"] as const).map(
-              (key) => {
-                const isActive = whisperModel === key;
-                let label = "";
-                let size = "";
-                if (key === "tiny.en") {
-                  label = "Tiny";
-                  size = "75 MB";
-                } else if (key === "base.en") {
-                  label = "Base";
-                  size = "142 MB";
-                } else if (key === "small.en") {
-                  label = "Small";
-                  size = "466 MB";
-                } else if (key === "medium.en") {
-                  label = "Medium";
-                  size = "1.53 GB";
-                }
-
-                return (
-                  <TouchableOpacity
-                    key={key}
-                    style={[
-                      styles.modelChip,
-                      isActive && styles.modelChipActive,
-                    ]}
-                    onPress={async () => {
-                      setWhisperModel(key);
-                      await stopKeywordSpotting();
-                    }}
-                  >
-                    <Text
-                      style={[
-                        styles.modelChipText,
-                        isActive && styles.modelChipTextActive,
-                      ]}
-                    >
-                      {label}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.modelSizeText,
-                        isActive && styles.modelSizeTextActive,
-                      ]}
-                    >
-                      {size}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              },
-            )}
+      {/* 5. Enable Debug Logs Card */}
+      <View style={styles.card}>
+        <View style={styles.cardHeader}>
+          <View style={[styles.iconContainer, { backgroundColor: COLORS.primaryLightBg }]}>
+            <Icon name="list" size={18} color={COLORS.primary} />
           </View>
-        </>
-      )}
-
-      <View style={styles.row}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.sectionLabel}>Enable Debug Logs</Text>
-          <Text style={styles.hint}>
-            Print key verification and transcription logs (helpful for local
-            debugging).
-          </Text>
+          <Text style={[styles.cardTitle, { flex: 1 }]}>Enable Debug Logs</Text>
+          <Switch
+            value={enableDebugLogs}
+            onValueChange={handleDebugLogsToggle}
+            thumbColor={enableDebugLogs ? COLORS.primary : '#9CA3AF'}
+            trackColor={{ true: COLORS.primaryLightBg, false: "#E5E7EB" }}
+            style={{ marginLeft: 8 }}
+          />
         </View>
-        <Switch
-          value={enableDebugLogs}
-          onValueChange={async (val) => {
-            setEnableDebugLogs(val);
-            await stopKeywordSpotting();
-          }}
-          thumbColor={enableDebugLogs ? COLORS.secondary : COLORS.grayThumb}
-          trackColor={{ true: COLORS.secondaryLight, false: COLORS.grayTrack }}
-        />
+        <Text style={styles.cardDescription}>
+          Print key verification and transcription logs (helpful for local debugging).
+        </Text>
       </View>
 
-      <TouchableOpacity style={styles.saveBtn} onPress={saveSettings}>
-        <Text style={styles.saveBtnText}>Save Settings</Text>
+      {/* Divider */}
+      <View style={styles.divider} />
+
+      {/* 6. Clear All History & Settings */}
+      <TouchableOpacity style={styles.clearBtn} onPress={handleClearAll}>
+        <Icon name="trash-2" size={18} color="#EF4444" style={{ marginRight: 8 }} />
+        <Text style={styles.clearBtnText}>Clear All History & Settings</Text>
       </TouchableOpacity>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: COLORS.neutral },
-  content: { padding: 24, paddingBottom: 48 },
-  sectionLabel: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: COLORS.tertiary,
-    textTransform: "uppercase",
-    letterSpacing: 1,
-    marginBottom: 8,
-    marginTop: 24,
+  root: {
+    flex: 1,
+    backgroundColor: COLORS.neutral,
   },
-  hint: { fontSize: 14, color: COLORS.tertiary, marginBottom: 12, lineHeight: 20 },
-  activeTagsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    marginVertical: 8,
+  content: {
+    padding: 16,
+    paddingBottom: 40,
   },
-  tag: {
+  card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#f2e6f0",
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  cardHeader: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: COLORS.secondaryBg,
-    borderRadius: 12,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderWidth: 1,
-    borderColor: COLORS.secondary,
+    marginBottom: 8,
   },
-  tagText: { fontSize: 14, color: COLORS.secondary, fontWeight: "600" },
-  tagRemoveBtn: {
-    marginLeft: 6,
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: COLORS.secondaryLight,
+  iconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
   },
-  tagRemoveText: {
-    fontSize: 12,
-    color: COLORS.secondary,
+  cardTitle: {
+    fontSize: 16,
     fontWeight: "700",
-    marginTop: -2,
+    color: "#1F2937",
+    marginLeft: 12,
   },
-  noWordsText: {
+  cardDescription: {
     fontSize: 14,
-    color: COLORS.tertiary,
-    fontStyle: "italic",
-    marginVertical: 8,
+    color: "#6B7280",
+    lineHeight: 20,
+    marginTop: 4,
+    marginBottom: 16,
   },
-  inputContainer: {
-    flexDirection: "row",
-    gap: 10,
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  addBtn: {
-    backgroundColor: COLORS.secondary,
-    borderRadius: 10,
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-  },
-  addBtnText: { color: COLORS.white, fontSize: 15, fontWeight: "700" },
-  chips: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 12 },
-  chip: {
-    borderRadius: 20,
-    paddingVertical: 7,
-    paddingHorizontal: 14,
-    backgroundColor: COLORS.grayLight,
-    borderWidth: 1,
-    borderColor: COLORS.grayBorder,
-  },
-  chipActive: { backgroundColor: COLORS.secondary, borderColor: COLORS.secondary },
-  chipText: { fontSize: 14, color: COLORS.tertiary },
-  chipTextActive: { color: COLORS.white, fontWeight: "600" },
-  input: {
-    backgroundColor: COLORS.white,
-    borderRadius: 10,
-    padding: 14,
-    fontSize: 15,
-    borderWidth: 1,
-    borderColor: COLORS.grayBorder,
-    marginBottom: 8,
-  },
-  row: { flexDirection: "row", alignItems: "center", marginTop: 44 },
-  saveBtn: {
-    backgroundColor: COLORS.primary,
-    borderRadius: 14,
-    paddingVertical: 16,
-    alignItems: "center",
-    marginTop: 32,
-  },
-  saveBtnText: { color: COLORS.white, fontSize: 17, fontWeight: "700" },
   chipsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 8,
-    marginVertical: 10,
+    marginBottom: 16,
+  },
+  chip: {
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+  },
+  chipActive: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+  },
+  chipInactive: {
+    backgroundColor: "#FFFFFF",
+    borderColor: COLORS.primaryBorder,
+  },
+  chipText: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  chipTextActive: {
+    color: "#FFFFFF",
+  },
+  chipTextInactive: {
+    color: COLORS.primary,
+  },
+  inputLabel: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#4B5563",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginBottom: 8,
+  },
+  customInputContainer: {
+    flexDirection: "row",
+    gap: 8,
+    alignItems: "center",
+  },
+  customInput: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: COLORS.primaryBorder,
+    paddingHorizontal: 14,
+    height: 48,
+    fontSize: 15,
+    color: "#1F2937",
+  },
+  addBtn: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    height: 48,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  addBtnText: {
+    color: "#FFFFFF",
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  sliderLabelRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  sliderLabelSide: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#6B7280",
+  },
+  sliderValueText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: COLORS.primary,
+  },
+  sliderTicksRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: -4,
+  },
+  sliderTickText: {
+    fontSize: 12,
+    color: "#9CA3AF",
+  },
+  cooldownRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 16,
+  },
+  cooldownRecommended: {
+    fontSize: 14,
+    color: "#6B7280",
+    fontStyle: "italic",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#E5E7EB",
+    marginVertical: 16,
+  },
+  clearBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#EF4444",
+    borderRadius: 12,
+    height: 48,
+    marginTop: 8,
+  },
+  clearBtnText: {
+    color: "#747676ff",
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  whisperModelSection: {
+    marginTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: "#F3F4F6",
+    paddingTop: 16,
+  },
+  whisperModelTitle: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#1F2937",
+    marginBottom: 4,
+  },
+  whisperModelDesc: {
+    fontSize: 13,
+    color: "#6B7280",
+    lineHeight: 18,
+    marginBottom: 12,
+  },
+  modelChipsGrid: {
+    flexDirection: "column",
+    gap: 10,
+    width: "100%",
+  },
+  modelChipsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
+    width: "100%",
   },
   modelChip: {
     flex: 1,
-    minWidth: "45%",
-    backgroundColor: COLORS.white,
+    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: COLORS.grayBorder,
+    borderColor: "#E5E7EB",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 8,
   },
   modelChipActive: {
-    backgroundColor: COLORS.secondary,
-    borderColor: COLORS.secondary,
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
   },
   modelChipText: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "700",
-    color: COLORS.tertiary,
+    color: "#4B5563",
     marginBottom: 2,
   },
   modelChipTextActive: {
-    color: COLORS.white,
+    color: "#FFFFFF",
   },
   modelSizeText: {
     fontSize: 12,
-    color: COLORS.tertiary,
+    color: "#9CA3AF",
   },
   modelSizeTextActive: {
     color: COLORS.secondaryBg,
-  },
-  warningBox: {
-    backgroundColor: COLORS.primaryBg,
-    borderColor: COLORS.primaryBorder,
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 12,
-    marginTop: 8,
-    marginBottom: 16,
-  },
-  warningText: {
-    color: COLORS.primary,
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  infoBox: {
-    backgroundColor: COLORS.secondaryLightBg,
-    borderColor: COLORS.secondaryLight,
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 12,
-    marginTop: 8,
-    marginBottom: 16,
-  },
-  infoText: {
-    color: COLORS.secondary,
-    fontSize: 13,
-    lineHeight: 18,
   },
 });
