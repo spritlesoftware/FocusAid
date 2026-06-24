@@ -34,6 +34,8 @@ android/app/src/main/res/raw/
 node_modules/
 npm-debug.log
 yarn-error.log
+yarn.lock
+package-lock.json
 
 # React Native
 .expo/
