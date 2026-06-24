@@ -4,43 +4,13 @@
  * Shows a prompt if microphone permission is not granted.
  */
 import React, { useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Linking, Image } from 'react-native';
 import { usePermissions } from '../hooks/usePermissions';
 import { COLORS } from '../config/colors';
 import { MicIcon } from './Icons';
 
 interface Props {
   children: React.ReactNode;
-}
-
-// Minimal CSS ear logo drawing
-function EarIcon({ color = COLORS.primary, size = 16 }) {
-  return (
-    <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
-      <View style={{
-        width: size * 0.75,
-        height: size * 0.95,
-        borderRadius: size * 0.4,
-        borderWidth: 2,
-        borderColor: color,
-        borderRightWidth: 0,
-        transform: [{ rotate: '-15deg' }],
-        backgroundColor: 'transparent',
-      }} />
-      <View style={{
-        width: size * 0.35,
-        height: size * 0.5,
-        borderRadius: size * 0.2,
-        borderWidth: 1.5,
-        borderColor: color,
-        borderLeftWidth: 0,
-        position: 'absolute',
-        right: size * 0.1,
-        top: size * 0.22,
-        backgroundColor: 'transparent',
-      }} />
-    </View>
-  );
 }
 
 export function PermissionGate({ children }: Props) {
@@ -57,7 +27,7 @@ export function PermissionGate({ children }: Props) {
       {/* Top Brand Logo */}
       <View style={styles.brandRow}>
         <View style={styles.brandBox}>
-          <EarIcon color={COLORS.primary} size={20} />
+          <Image source={require('../../assets/logo.png')} style={styles.brandLogo} resizeMode="contain" />
         </View>
         <Text style={styles.brandText}>Focus Aid</Text>
       </View>
@@ -116,17 +86,13 @@ const styles = StyleSheet.create({
   brandBox: {
     width: 28,
     height: 28,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: COLORS.primaryBorder,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    backgroundColor: 'transparent',
+  },
+  brandLogo: {
+    width: 30,
+    height: 25,
   },
   brandText: {
     fontSize: 25,
