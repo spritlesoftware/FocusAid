@@ -13,7 +13,7 @@ import {SHERPA_DIR} from '../utils/paths';
 const DEFAULT_CONFIG: Omit<TriggerConfig, 'keyword'> = {
   threshold: 0.5,
   cooldownMs: 6000,
-  capturePostMs: 3000,
+  capturePostMs: 1500, // Reduced from 3000ms to decrease trigger delay and speed up transcription
 };
 
 let isListeningState = false;

@@ -116,6 +116,9 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    // TFLite Task Audio — on-device acoustic scene classification (YAMNet)
+    implementation 'org.tensorflow:tensorflow-lite-task-audio:0.4.4'
 }
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"

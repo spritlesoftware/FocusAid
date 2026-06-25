@@ -19,6 +19,15 @@ import { useDetectionEvents } from '../hooks/useDetectionEvents';
 import { DetectionCard } from '../components/DetectionCard';
 import { initModels, isModelsReady } from '../services/modelManager';
 import { initWhisperEngine, releaseWhisper } from '../services/whisperService';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {
+  startSceneDetection,
+  stopSceneDetection,
+  getCurrentScene,
+  onSceneChange,
+  PLACE_ICON,
+  PlaceType,
+} from '../services/acousticSceneService';
 import { COLORS } from '../config/colors';
 
 const SETTINGS_KEY = '@hearing_trigger:settings';
@@ -30,10 +39,14 @@ export function HomeScreen() {
   const [phase, setPhase] = useState<Phase>('setup');
   const [progress, setProgress] = useState('');
   const [keywords, setKeywords] = useState<string[]>(['test', 'help']);
+  const [scene, setScene] = useState<PlaceType>(getCurrentScene);
   const detections = useDetectionEvents(10);
-  const activeModelRef = useRef<string>('tiny.en');
+  const activeModelRef = useRef<string>('medium.en-q5_0');
   const navigation = useNavigation<any>();
   const scrollViewRef = useRef<ScrollView>(null);
+
+  // Subscribe to acoustic scene updates
+  useEffect(() => onSceneChange(setScene), []);
 
   // Sync listening phase with KWS service state
   useFocusEffect(
@@ -56,7 +69,7 @@ export function HomeScreen() {
             setKeywords([s.keyword]);
           }
 
-          const newModel = s.whisperModel || 'tiny.en';
+          const newModel = s.whisperModel || 'medium.en-q5_0';
           if (newModel !== activeModelRef.current) {
             activeModelRef.current = newModel;
             setPhase('setup');
@@ -116,6 +129,7 @@ export function HomeScreen() {
     if (phase === 'setup') return;
     if (phase === 'listening') {
       await stopKeywordSpotting();
+      await stopSceneDetection();
       setPhase('ready');
       const raw = await AsyncStorage.getItem(SETTINGS_KEY);
       if (raw) {
@@ -139,6 +153,7 @@ export function HomeScreen() {
       }
       setKeywords(kws);
       await startKeywordSpotting(kws);
+      startSceneDetection();
       setPhase('listening');
     }
   };
@@ -200,6 +215,17 @@ export function HomeScreen() {
             <Text style={styles.statusMainText}>
               Listening for <Text style={styles.keywordHighlight}>{keywordsString}</Text>
             </Text>
+            <View style={styles.sceneBadge}>
+              <Ionicons
+                name={PLACE_ICON[scene] ?? 'help-circle-outline'}
+                size={16}
+                color={COLORS.secondary}
+                style={styles.sceneIcon}
+              />
+              <Text style={styles.sceneBadgeText}>
+                {scene === 'Unknown' ? 'Analyzing environment...' : scene}
+              </Text>
+            </View>
           </>
         )}
         {phase === 'error' && (
@@ -408,5 +434,22 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     color: COLORS.primary,
+  },
+  sceneBadge: {
+    marginTop: 10,
+    backgroundColor: COLORS.secondaryBg,
+    borderRadius: 20,
+    paddingVertical: 4,
+    paddingHorizontal: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sceneIcon: {
+    marginRight: 6,
+  },
+  sceneBadgeText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: COLORS.secondary,
   },
 });

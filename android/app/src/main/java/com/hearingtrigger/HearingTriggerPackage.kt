@@ -7,7 +7,7 @@ import com.facebook.react.uimanager.ViewManager
 
 class HearingTriggerPackage : ReactPackage {
     override fun createNativeModules(ctx: ReactApplicationContext): List<NativeModule> =
-        listOf(HearingTriggerModule(ctx))
+        listOf(HearingTriggerModule(ctx), AcousticSceneModule(ctx))
 
     override fun createViewManagers(ctx: ReactApplicationContext): List<ViewManager<*, *>> =
         emptyList()

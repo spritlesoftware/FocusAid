@@ -7,6 +7,7 @@ export interface Detection {
   clipPath?: string;      // local path to 3-sec PCM/wav clip
   transcript?: string;    // whisper.rn result: undefined=pending, ''=no speech, string=result
   confirmed: boolean;     // true only after Whisper finds the keyword in transcript
+  placeType?: string;     // acoustic scene at time of detection (e.g. "Office", "Mall")
 }
 
 export interface TriggerConfig {

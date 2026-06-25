@@ -33,6 +33,7 @@ export async function transcribeClip(audioPath: string): Promise<string> {
     language: 'en',
     maxLen: 60,
     tokenTimestamps: false,
+    maxThreads: 4, // Utilize multiple threads to speed up transcription inference
     // Best performance for short clips
     beamSize: 1,
     temperature: 0,

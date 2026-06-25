@@ -15,14 +15,23 @@ setup_permissions([
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
-linkage = ENV['USE_FRAMEWORKS']
-if linkage != nil
-  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
-  use_frameworks! :linkage => linkage.to_sym
+# Define Swift / TF Lite pods that must be built as static frameworks
+$static_pods = ['TensorFlowLiteSwift', 'TensorFlowLiteC']
+
+pre_install do |installer|
+  installer.pod_targets.each do |pod|
+    if $static_pods.include?(pod.name)
+      def pod.build_as_static_framework?; true end
+      def pod.build_type; Pod::BuildType.static_framework end
+    end
+  end
 end
 
 target 'HearingTriggerRN' do
   config = use_native_modules!
+
+  # YAMNet acoustic scene classification — on-device TFLite inference
+  pod 'TensorFlowLiteSwift', '~> 2.14.0'
 
   use_react_native!(
     :path => config[:reactNativePath],

@@ -41,9 +41,9 @@ class HearingForegroundService : Service() {
 
     private val SAMPLE_RATE      = 16000
     private val FRAME_SIZE       = 1024          // ~64ms at 16kHz
-    private val MIN_SPEECH_MS    = 700L          // sustained speech required before triggering
+    private val MIN_SPEECH_MS    = 350L          // sustained speech required before triggering (reduced from 700ms for faster trigger)
     private val ENERGY_THRESHOLD = 0.045f        // normalized RMS — filters room noise, HVAC, TV hum
-    private val PRE_ROLL_SAMPLES = SAMPLE_RATE   // 1 second pre-roll to avoid clipping onset
+    private val PRE_ROLL_SAMPLES = SAMPLE_RATE / 2 // 0.5 second pre-roll to reduce Whisper decoding time (reduced from 1.0s)
 
     // Config (set from intent extras, updated live via pendingThreshold / pendingCooldownMs)
     private var keyword       = ""

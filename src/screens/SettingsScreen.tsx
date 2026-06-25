@@ -245,7 +245,7 @@ export function SettingsScreen() {
   const [cooldown, setCooldown] = useState("6000");
   const [useWhisper, setUseWhisper] = useState(true);
   const [enableDebugLogs, setEnableDebugLogs] = useState(false);
-  const [whisperModel, setWhisperModel] = useState("tiny.en");
+  const [whisperModel, setWhisperModel] = useState("medium.en-q5_0");
 
   // Load persisted settings on mount
   useEffect(() => {
@@ -379,7 +379,7 @@ export function SettingsScreen() {
             setThreshold("0.5");
             setCooldown("6000");
             setUseWhisper(true);
-            setWhisperModel("tiny.en");
+            setWhisperModel("medium.en-q5_0");
             setEnableDebugLogs(false);
             await updateThreshold(0.5);
             await stopKeywordSpotting();
@@ -538,62 +538,15 @@ export function SettingsScreen() {
                 <TouchableOpacity
                   style={[
                     styles.modelChip,
-                    whisperModel === "tiny.en" && styles.modelChipActive,
+                    styles.modelChipActive,
                   ]}
-                  onPress={() => handleModelChange("tiny.en")}
+                  disabled={true}
                 >
-                  <Text style={[styles.modelChipText, whisperModel === "tiny.en" && styles.modelChipTextActive]}>
-                    Tiny
+                  <Text style={[styles.modelChipText, styles.modelChipTextActive]}>
+                    Medium (Quantized)
                   </Text>
-                  <Text style={[styles.modelSizeText, whisperModel === "tiny.en" && styles.modelSizeTextActive]}>
-                    75 MB
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[
-                    styles.modelChip,
-                    whisperModel === "base.en" && styles.modelChipActive,
-                  ]}
-                  onPress={() => handleModelChange("base.en")}
-                >
-                  <Text style={[styles.modelChipText, whisperModel === "base.en" && styles.modelChipTextActive]}>
-                    Base
-                  </Text>
-                  <Text style={[styles.modelSizeText, whisperModel === "base.en" && styles.modelSizeTextActive]}>
-                    142 MB
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.modelChipsRow}>
-                <TouchableOpacity
-                  style={[
-                    styles.modelChip,
-                    whisperModel === "small.en" && styles.modelChipActive,
-                  ]}
-                  onPress={() => handleModelChange("small.en")}
-                >
-                  <Text style={[styles.modelChipText, whisperModel === "small.en" && styles.modelChipTextActive]}>
-                    Small
-                  </Text>
-                  <Text style={[styles.modelSizeText, whisperModel === "small.en" && styles.modelSizeTextActive]}>
-                    466 MB
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[
-                    styles.modelChip,
-                    whisperModel === "medium.en" && styles.modelChipActive,
-                  ]}
-                  onPress={() => handleModelChange("medium.en")}
-                >
-                  <Text style={[styles.modelChipText, whisperModel === "medium.en" && styles.modelChipTextActive]}>
-                    Medium
-                  </Text>
-                  <Text style={[styles.modelSizeText, whisperModel === "medium.en" && styles.modelSizeTextActive]}>
-                    1.53 GB
+                  <Text style={[styles.modelSizeText, styles.modelSizeTextActive]}>
+                    510 MB (Bundled Offline)
                   </Text>
                 </TouchableOpacity>
               </View>

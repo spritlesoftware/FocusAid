@@ -1,19 +1,22 @@
 /**
  * modelManager.ts
  *
- * Downloads and verifies local model files at first launch.
- * Whisper: ggml-tiny.en.bin (~75 MB) - good balance of accuracy and speed.
+ * Copies pre-bundled models from app assets/bundle to the local documents folder on startup.
+ * Whisper: ggml-medium.en-q5_0.bin (~510 MB) - quantized for offline, RAM-safe, high-accuracy use.
  * sherpa-onnx KWS: a pre-trained keyword spotter ONNX + tokens.
- *
- * In production, host these files on your CDN and verify SHA256.
  */
+import { Platform } from 'react-native';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getActiveWhisperModelPath, getWhisperModelPath, SHERPA_DIR, ensureDirectories} from '../utils/paths';
+import { getActiveWhisperModelPath, getWhisperModelPath, SHERPA_DIR, ensureDirectories } from '../utils/paths';
 
 const SETTINGS_KEY = '@hearing_trigger:settings';
 
 export const WHISPER_MODELS = {
+  'medium.en-q5_0': {
+    name: 'Whisper medium.en-q5_0 (~510 MB)',
+    url: 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-medium.en-q5_0.bin',
+  },
   'tiny.en': {
     name: 'Whisper tiny.en (~75 MB)',
     url: 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.en.bin',
@@ -22,26 +25,9 @@ export const WHISPER_MODELS = {
     name: 'Whisper base.en (~142 MB)',
     url: 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin',
   },
-  'small.en': {
-    name: 'Whisper small.en (~466 MB)',
-    url: 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.en.bin',
-  },
-  'medium.en': {
-    name: 'Whisper medium.en (~1.53 GB)',
-    url: 'https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-medium.en.bin',
-  },
 };
 
 export type WhisperModelKey = keyof typeof WHISPER_MODELS;
-
-const SHERPA_ENCODER_URL =
-  'https://github.com/k2-fsa/sherpa-onnx/releases/download/kws-models/sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01-encoder.onnx';
-
-const SHERPA_DECODER_URL =
-  'https://github.com/k2-fsa/sherpa-onnx/releases/download/kws-models/sherpa-onnx-kws-zipformer-wenetspeech-3.3M-2024-01-01-decoder.onnx';
-
-const SHERPA_TOKENS_URL =
-  'https://github.com/k2-fsa/sherpa-onnx/releases/download/kws-models/tokens.txt';
 
 export interface DownloadProgress {
   file: string;
@@ -53,8 +39,8 @@ export async function initModels(
 ): Promise<void> {
   await ensureDirectories();
 
-  // Load the active model key from AsyncStorage
-  let modelKey: WhisperModelKey = 'tiny.en';
+  // Load the active model key from AsyncStorage (defaults to medium.en-q5_0)
+  let modelKey: WhisperModelKey = 'medium.en-q5_0';
   try {
     const raw = await AsyncStorage.getItem(SETTINGS_KEY);
     if (raw) {
@@ -65,13 +51,58 @@ export async function initModels(
     }
   } catch {}
 
-  const modelInfo = WHISPER_MODELS[modelKey];
-  const whisperPath = getWhisperModelPath(modelKey);
+  const whisperFileName = `ggml-${modelKey}.bin`;
+  const whisperDestPath = getWhisperModelPath(modelKey);
 
-  await maybeDownload(whisperPath, modelInfo.url, modelInfo.name, onProgress);
-  await maybeDownload(`${SHERPA_DIR}/encoder.onnx`, SHERPA_ENCODER_URL, 'KWS Encoder', onProgress);
-  await maybeDownload(`${SHERPA_DIR}/decoder.onnx`, SHERPA_DECODER_URL, 'KWS Decoder', onProgress);
-  await maybeDownload(`${SHERPA_DIR}/tokens.txt`, SHERPA_TOKENS_URL, 'KWS Tokens', onProgress);
+  const filesToCopy = [
+    { name: whisperFileName, dest: whisperDestPath, label: `Whisper Model (${modelKey})` },
+    { name: 'encoder.onnx', dest: `${SHERPA_DIR}/encoder.onnx`, label: 'KWS Encoder' },
+    { name: 'decoder.onnx', dest: `${SHERPA_DIR}/decoder.onnx`, label: 'KWS Decoder' },
+    { name: 'tokens.txt', dest: `${SHERPA_DIR}/tokens.txt`, label: 'KWS Tokens' },
+  ];
+
+  for (const file of filesToCopy) {
+    const progressLabel = file.label;
+    onProgress?.({ file: progressLabel, percent: 10 });
+
+    if (await RNFS.exists(file.dest)) {
+      onProgress?.({ file: progressLabel, percent: 100 });
+      continue;
+    }
+
+    try {
+      if (Platform.OS === 'android') {
+        // Android assets copy
+        // On Android, copyFileAssets expects path relative to "assets" folder
+        const assetSrc = `models/${file.name}`;
+        onProgress?.({ file: progressLabel, percent: 40 });
+        await RNFS.copyFileAssets(assetSrc, file.dest);
+        onProgress?.({ file: progressLabel, percent: 100 });
+      } else {
+        // iOS main bundle copy
+        const bundleSrc = `${RNFS.MainBundlePath}/models/${file.name}`;
+        if (await RNFS.exists(bundleSrc)) {
+          onProgress?.({ file: progressLabel, percent: 40 });
+          await RNFS.copyFile(bundleSrc, file.dest);
+          onProgress?.({ file: progressLabel, percent: 100 });
+        } else {
+          // Fallback check: if no models subfolder, check if it's placed in main bundle root
+          const rootBundleSrc = `${RNFS.MainBundlePath}/${file.name}`;
+          if (await RNFS.exists(rootBundleSrc)) {
+            onProgress?.({ file: progressLabel, percent: 40 });
+            await RNFS.copyFile(rootBundleSrc, file.dest);
+            onProgress?.({ file: progressLabel, percent: 100 });
+          } else {
+            console.warn(`Source model not found in iOS bundle: ${bundleSrc}`);
+            throw new Error(`Model file not found in iOS bundle: ${file.name}`);
+          }
+        }
+      }
+    } catch (err) {
+      console.error(`Failed to copy model ${file.name} from app assets:`, err);
+      throw err;
+    }
+  }
 }
 
 export async function isModelsReady(): Promise<boolean> {
@@ -82,22 +113,4 @@ export async function isModelsReady(): Promise<boolean> {
     (await RNFS.exists(`${SHERPA_DIR}/decoder.onnx`)) &&
     (await RNFS.exists(`${SHERPA_DIR}/tokens.txt`))
   );
-}
-
-async function maybeDownload(
-  destPath: string,
-  url: string,
-  label: string,
-  onProgress?: (p: DownloadProgress) => void,
-): Promise<void> {
-  if (await RNFS.exists(destPath)) return;
-
-  await RNFS.downloadFile({
-    fromUrl: url,
-    toFile: destPath,
-    progress: res => {
-      const percent = Math.round((res.bytesWritten / res.contentLength) * 100);
-      onProgress?.({file: label, percent});
-    },
-  }).promise;
 }

@@ -22,6 +22,7 @@ import {
 import { transcribeClip } from "./whisperService";
 import { saveDetection } from "./detectionStore";
 import { Detection } from "../types/detection";
+import { getCurrentScene } from "./acousticSceneService";
 
 type DetectionCallback = (d: Detection) => void;
 const listeners: DetectionCallback[] = [];
@@ -105,6 +106,7 @@ export function startAudioBridge() {
             clipPath: rawEvent.clipPath,
             transcript,
             confirmed: true,
+            placeType: getCurrentScene(),
           };
 
           // Fire the haptic feedback

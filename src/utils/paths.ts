@@ -22,7 +22,7 @@ export async function getActiveWhisperModelPath(): Promise<string> {
       }
     }
   } catch {}
-  return getWhisperModelPath('tiny.en');
+  return getWhisperModelPath('medium.en-q5_0');
 }
 
 export async function ensureDirectories() {

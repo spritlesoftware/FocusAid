@@ -10,8 +10,10 @@
  */
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Detection } from "../types/detection";
 import { COLORS } from "../config/colors";
+import { PLACE_ICON } from "../services/acousticSceneService";
 
 interface Props {
   item: Detection;
@@ -46,9 +48,22 @@ export function DetectionCard({ item }: Props) {
           </Text>
         </View>
       </View>
-      <Text style={styles.meta}>
-        {time} · {pct}% confidence
-      </Text>
+      <View style={styles.metaRow}>
+        <Text style={styles.meta}>{time} · {pct}% confidence</Text>
+        {item.placeType && item.placeType !== 'Unknown' && (
+          <View style={styles.placeBadge}>
+            <Ionicons
+              name={PLACE_ICON[item.placeType] ?? 'help-circle-outline'}
+              size={12}
+              color={COLORS.secondary}
+              style={{ marginRight: 4 }}
+            />
+            <Text style={styles.placeBadgeText}>
+              {item.placeType}
+            </Text>
+          </View>
+        )}
+      </View>
       {transcriptNode}
     </View>
   );
@@ -79,7 +94,17 @@ const styles = StyleSheet.create({
   badgeOk: { backgroundColor: COLORS.secondaryBg },
   badgeLow: { backgroundColor: COLORS.primaryLightBg },
   badgeText: { fontSize: 12, fontWeight: "600" },
-  meta: { fontSize: 13, color: COLORS.tertiary, marginBottom: 8 },
+  metaRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 },
+  meta: { fontSize: 13, color: COLORS.tertiary },
+  placeBadge: {
+    backgroundColor: COLORS.secondaryBg,
+    borderRadius: 20,
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  placeBadgeText: { fontSize: 11, fontWeight: '600', color: COLORS.secondary },
   transcript: { fontSize: 14, color: COLORS.tertiary, fontStyle: "italic" },
   transcriptPending: { fontSize: 13, color: COLORS.tertiary, fontStyle: "italic", opacity: 0.6 },
   transcriptNone: { fontSize: 13, color: COLORS.primary, fontStyle: "italic" },
