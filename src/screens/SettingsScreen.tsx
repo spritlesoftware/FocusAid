@@ -44,15 +44,23 @@ interface IconProps {
 }
 
 function Icon({ name, size = 18, color = "#9D2B7A", style }: IconProps) {
-  if (name === "key") return <KeyIcon size={size} color={color} style={style} />;
+  if (name === "key")
+    return <KeyIcon size={size} color={color} style={style} />;
   // Note: For volume/sensitivity we will use the custom styled SpeakerIcon inside Icons.tsx which was named VolumeIcon
-  if (name === "volume-2") return <VolumeIcon size={size} color={color} style={style} />;
-  if (name === "clock") return <ClockIcon size={size} color={color} style={style} />;
-  if (name === "message-square") return <MessageSquareIcon size={size} color={color} style={style} />;
-  if (name === "list") return <ListIcon size={size} color={color} style={style} />;
-  if (name === "trash-2") return <TrashIcon size={size} color={color} style={style} />;
-  if (name === "chevron-up") return <ChevronUpIcon size={size} color={color} style={style} />;
-  if (name === "chevron-down") return <ChevronDownIcon size={size} color={color} style={style} />;
+  if (name === "volume-2")
+    return <VolumeIcon size={size} color={color} style={style} />;
+  if (name === "clock")
+    return <ClockIcon size={size} color={color} style={style} />;
+  if (name === "message-square")
+    return <MessageSquareIcon size={size} color={color} style={style} />;
+  if (name === "list")
+    return <ListIcon size={size} color={color} style={style} />;
+  if (name === "trash-2")
+    return <TrashIcon size={size} color={color} style={style} />;
+  if (name === "chevron-up")
+    return <ChevronUpIcon size={size} color={color} style={style} />;
+  if (name === "chevron-down")
+    return <ChevronDownIcon size={size} color={color} style={style} />;
   return null;
 }
 // Custom Slider component using parent touch responder to avoid jumpiness
@@ -62,7 +70,11 @@ interface SensitivitySliderProps {
   onComplete: (val: number) => void;
 }
 
-function SensitivitySlider({ value, onChange, onComplete }: SensitivitySliderProps) {
+function SensitivitySlider({
+  value,
+  onChange,
+  onComplete,
+}: SensitivitySliderProps) {
   const min = 0.3;
   const max = 0.7;
   const [width, setWidth] = useState(0);
@@ -96,17 +108,11 @@ function SensitivitySlider({ value, onChange, onComplete }: SensitivitySliderPro
     >
       <View style={sliderStyles.track} pointerEvents="none" />
       <View
-        style={[
-          sliderStyles.activeTrack,
-          { width: `${percent * 100}%` }
-        ]}
+        style={[sliderStyles.activeTrack, { width: `${percent * 100}%` }]}
         pointerEvents="none"
       />
       <View
-        style={[
-          sliderStyles.thumb,
-          { left: percent * width - 12 }
-        ]}
+        style={[sliderStyles.thumb, { left: percent * width - 12 }]}
         pointerEvents="none"
       />
     </View>
@@ -239,7 +245,7 @@ export function SettingsScreen() {
   useFocusEffect(
     useCallback(() => {
       scrollViewRef.current?.scrollTo({ y: 0, animated: false });
-    }, [])
+    }, []),
   );
   const [customInput, setCustomInput] = useState("");
   const [threshold, setThreshold] = useState("0.5");
@@ -264,7 +270,7 @@ export function SettingsScreen() {
         if (s.useWhisper != null) setUseWhisper(s.useWhisper);
         if (s.enableDebugLogs != null) setEnableDebugLogs(s.enableDebugLogs);
         if (s.whisperModel != null) setWhisperModel(s.whisperModel);
-      } catch { }
+      } catch {}
     });
   }, []);
 
@@ -280,14 +286,20 @@ export function SettingsScreen() {
     try {
       const raw = await AsyncStorage.getItem(SETTINGS_KEY);
       if (raw) currentSettings = JSON.parse(raw);
-    } catch { }
+    } catch {}
 
     const kws = updates.keywords !== undefined ? updates.keywords : keywords;
-    const thresh = updates.threshold !== undefined ? updates.threshold : threshold;
+    const thresh =
+      updates.threshold !== undefined ? updates.threshold : threshold;
     const cool = updates.cooldown !== undefined ? updates.cooldown : cooldown;
-    const whisper = updates.useWhisper !== undefined ? updates.useWhisper : useWhisper;
-    const debug = updates.enableDebugLogs !== undefined ? updates.enableDebugLogs : enableDebugLogs;
-    const model = updates.whisperModel !== undefined ? updates.whisperModel : whisperModel;
+    const whisper =
+      updates.useWhisper !== undefined ? updates.useWhisper : useWhisper;
+    const debug =
+      updates.enableDebugLogs !== undefined
+        ? updates.enableDebugLogs
+        : enableDebugLogs;
+    const model =
+      updates.whisperModel !== undefined ? updates.whisperModel : whisperModel;
 
     const merged = {
       keywords: kws.map((w) => w.toLowerCase().trim()),
@@ -386,13 +398,11 @@ export function SettingsScreen() {
             await stopKeywordSpotting();
           },
         },
-      ]
+      ],
     );
   };
 
-  const displayChips = Array.from(
-    new Set([...PRESET_KEYWORDS, ...keywords])
-  );
+  const displayChips = Array.from(new Set([...PRESET_KEYWORDS, ...keywords]));
 
   return (
     <ImageBackground
@@ -404,194 +414,244 @@ export function SettingsScreen() {
         style={styles.scrollView}
         contentContainerStyle={styles.content}
       >
-      {/* 1. Trigger Word Card */}
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <View style={[styles.iconContainer, { backgroundColor: 'rgba(56, 189, 248, 0.12)' }]}>
-            <Icon name="key" size={18} color={COLORS.secondary} />
+        {/* 1. Trigger Word Card */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <View
+              style={[
+                styles.iconContainer,
+                { backgroundColor: "rgba(56, 189, 248, 0.12)" },
+              ]}
+            >
+              <Icon name="key" size={18} color={COLORS.secondary} />
+            </View>
+            <Text style={[styles.cardTitle, { flex: 1 }]}>Trigger Word</Text>
           </View>
-          <Text style={[styles.cardTitle, { flex: 1 }]}>Trigger Word</Text>
-        </View>
 
-        <Text style={styles.cardDescription}>
-          Choose a word that Focus Aid will prioritize for alerts.
-        </Text>
+          <Text style={styles.cardDescription}>
+            Choose a word that Focus Aid will prioritize for alerts.
+          </Text>
 
-        <View style={styles.chipsContainer}>
-          {displayChips.map((word) => {
-            const isActive = keywords.includes(word);
-            const displayWord = word.charAt(0).toUpperCase() + word.slice(1);
-            return (
-              <TouchableOpacity
-                key={word}
-                style={[
-                  styles.chip,
-                  isActive ? styles.chipActive : styles.chipInactive,
-                ]}
-                onPress={() => toggleKeyword(word)}
-              >
-                <Text
-                  style={[
-                    styles.chipText,
-                    isActive ? styles.chipTextActive : styles.chipTextInactive,
-                  ]}
-                >
-                  {displayWord}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-
-        <Text style={styles.inputLabel}>Custom Trigger Word</Text>
-        <View style={styles.customInputContainer}>
-          <TextInput
-            style={styles.customInput}
-            value={customInput}
-            onChangeText={setCustomInput}
-            placeholder="Type a word..."
-            placeholderTextColor="#9CA3AF"
-            autoCapitalize="none"
-            autoCorrect={false}
-            maxLength={20}
-            onSubmitEditing={addCustomKeyword}
-          />
-          <TouchableOpacity style={styles.addBtn} onPress={addCustomKeyword}>
-            <Text style={styles.addBtnText}>Add</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* 2. Sensitivity Threshold Card */}
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <View style={[styles.iconContainer, { backgroundColor: 'rgba(56, 189, 248, 0.12)' }]}>
-            <Icon name="volume-2" size={18} color={COLORS.secondary} />
-          </View>
-          <Text style={[styles.cardTitle, { flex: 1 }]}>Sensitivity Threshold</Text>
-        </View>
-
-        <Text style={styles.cardDescription}>
-          Adjust how sensitive the microphone is to background noise.
-        </Text>
-
-        <View style={styles.sliderLabelRow}>
-          <Text style={styles.sliderLabelSide}>Low Sensitivity</Text>
-          <Text style={styles.sliderValueText}>{parseFloat(threshold).toFixed(1)}</Text>
-          <Text style={styles.sliderLabelSide}>High Sensitivity</Text>
-        </View>
-
-        <SensitivitySlider
-          value={parseFloat(threshold) || 0.5}
-          onChange={(val) => setThreshold(String(val))}
-          onComplete={handleSliderComplete}
-        />
-
-        <View style={styles.sliderTicksRow}>
-          <Text style={styles.sliderTickText}>0.3</Text>
-          <Text style={styles.sliderTickText}>0.7</Text>
-        </View>
-      </View>
-
-      {/* 3. Cooldown Period Card */}
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <View style={[styles.iconContainer, { backgroundColor: 'rgba(56, 189, 248, 0.12)' }]}>
-            <Icon name="clock" size={18} color={COLORS.secondary} />
-          </View>
-          <Text style={[styles.cardTitle, { flex: 1 }]}>Cooldown Period</Text>
-        </View>
-
-        <Text style={styles.cardDescription}>
-          Wait time between repeat alerts for the same word.
-        </Text>
-
-        <Text style={styles.inputLabel}>Seconds</Text>
-        <View style={styles.cooldownRow}>
-          <CooldownStepper
-            value={Math.round((parseInt(cooldown, 10) || 6000) / 1000)}
-            onChange={handleCooldownChange}
-          />
-          <Text style={styles.cooldownRecommended}>Recommended: 38s</Text>
-        </View>
-      </View>
-
-      {/* 4. Transcribe with Whisper Card */}
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <View style={[styles.iconContainer, { backgroundColor: 'rgba(56, 189, 248, 0.12)' }]}>
-            <Icon name="message-square" size={18} color={COLORS.secondary} />
-          </View>
-          <Text style={[styles.cardTitle, { flex: 1 }]}>Transcribe with Whisper</Text>
-          <Switch
-            value={useWhisper}
-            onValueChange={handleWhisperToggle}
-            thumbColor={useWhisper ? COLORS.secondary : '#9CA3AF'}
-            trackColor={{ true: COLORS.primaryLightBg, false: COLORS.grayTrack }}
-            style={{ marginLeft: 8 }}
-          />
-        </View>
-
-        <Text style={styles.cardDescription}>
-          AI-powered transcription for higher accuracy.
-        </Text>
-
-        {useWhisper && (
-          <View style={styles.whisperModelSection}>
-            <Text style={styles.whisperModelTitle}>Whisper Model Size</Text>
-            <Text style={styles.whisperModelDesc}>
-              Larger models offer higher transcription accuracy but require more disk space, longer download times, and higher memory/CPU usage.
-            </Text>
-            <View style={styles.modelChipsGrid}>
-              <View style={styles.modelChipsRow}>
+          <View style={styles.chipsContainer}>
+            {displayChips.map((word) => {
+              const isActive = keywords.includes(word);
+              const displayWord = word.charAt(0).toUpperCase() + word.slice(1);
+              return (
                 <TouchableOpacity
+                  key={word}
                   style={[
-                    styles.modelChip,
-                    styles.modelChipActive,
+                    styles.chip,
+                    isActive ? styles.chipActive : styles.chipInactive,
                   ]}
-                  disabled={true}
+                  onPress={() => toggleKeyword(word)}
                 >
-                  <Text style={[styles.modelChipText, styles.modelChipTextActive]}>
-                    Medium (Quantized)
-                  </Text>
-                  <Text style={[styles.modelSizeText, styles.modelSizeTextActive]}>
-                    510 MB (Bundled Offline)
+                  <Text
+                    style={[
+                      styles.chipText,
+                      isActive
+                        ? styles.chipTextActive
+                        : styles.chipTextInactive,
+                    ]}
+                  >
+                    {displayWord}
                   </Text>
                 </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          <Text style={styles.inputLabel}>Custom Trigger Word</Text>
+          <View style={styles.customInputContainer}>
+            <TextInput
+              style={styles.customInput}
+              value={customInput}
+              onChangeText={setCustomInput}
+              placeholder="Type a word..."
+              placeholderTextColor="#9CA3AF"
+              autoCapitalize="none"
+              autoCorrect={false}
+              maxLength={20}
+              onSubmitEditing={addCustomKeyword}
+            />
+            <TouchableOpacity style={styles.addBtn} onPress={addCustomKeyword}>
+              <Text style={styles.addBtnText}>Add</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* 2. Sensitivity Threshold Card */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <View
+              style={[
+                styles.iconContainer,
+                { backgroundColor: "rgba(56, 189, 248, 0.12)" },
+              ]}
+            >
+              <Icon name="volume-2" size={18} color={COLORS.secondary} />
+            </View>
+            <Text style={[styles.cardTitle, { flex: 1 }]}>
+              Sensitivity Threshold
+            </Text>
+          </View>
+
+          <Text style={styles.cardDescription}>
+            Adjust how sensitive the microphone is to background noise.
+          </Text>
+
+          <View style={styles.sliderLabelRow}>
+            <Text style={styles.sliderLabelSide}>Low Sensitivity</Text>
+            <Text style={styles.sliderValueText}>
+              {parseFloat(threshold).toFixed(1)}
+            </Text>
+            <Text style={styles.sliderLabelSide}>High Sensitivity</Text>
+          </View>
+
+          <SensitivitySlider
+            value={parseFloat(threshold) || 0.5}
+            onChange={(val) => setThreshold(String(val))}
+            onComplete={handleSliderComplete}
+          />
+
+          <View style={styles.sliderTicksRow}>
+            <Text style={styles.sliderTickText}>0.3</Text>
+            <Text style={styles.sliderTickText}>0.7</Text>
+          </View>
+        </View>
+
+        {/* 3. Cooldown Period Card */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <View
+              style={[
+                styles.iconContainer,
+                { backgroundColor: "rgba(56, 189, 248, 0.12)" },
+              ]}
+            >
+              <Icon name="clock" size={18} color={COLORS.secondary} />
+            </View>
+            <Text style={[styles.cardTitle, { flex: 1 }]}>Cooldown Period</Text>
+          </View>
+
+          <Text style={styles.cardDescription}>
+            Wait time between repeat alerts for the same word.
+          </Text>
+
+          <Text style={styles.inputLabel}>Seconds</Text>
+          <View style={styles.cooldownRow}>
+            <CooldownStepper
+              value={Math.round((parseInt(cooldown, 10) || 6000) / 1000)}
+              onChange={handleCooldownChange}
+            />
+            <Text style={styles.cooldownRecommended}>Recommended: 38s</Text>
+          </View>
+        </View>
+
+        {/* 4. Transcribe with Whisper Card */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <View
+              style={[
+                styles.iconContainer,
+                { backgroundColor: "rgba(56, 189, 248, 0.12)" },
+              ]}
+            >
+              <Icon name="message-square" size={18} color={COLORS.secondary} />
+            </View>
+            <Text style={[styles.cardTitle, { flex: 1 }]}>
+              Transcribe with Whisper
+            </Text>
+            <Switch
+              value={useWhisper}
+              onValueChange={handleWhisperToggle}
+              thumbColor={useWhisper ? COLORS.secondary : "#9CA3AF"}
+              trackColor={{
+                true: COLORS.primaryLightBg,
+                false: COLORS.grayTrack,
+              }}
+              style={{ marginLeft: 8 }}
+            />
+          </View>
+
+          <Text style={styles.cardDescription}>
+            AI-powered transcription for higher accuracy.
+          </Text>
+
+          {useWhisper && (
+            <View style={styles.whisperModelSection}>
+              <Text style={styles.whisperModelTitle}>Whisper Model Size</Text>
+              <Text style={styles.whisperModelDesc}>
+                Larger models offer higher transcription accuracy but require
+                more disk space, longer download times, and higher memory/CPU
+                usage.
+              </Text>
+              <View style={styles.modelChipsGrid}>
+                <View style={styles.modelChipsRow}>
+                  <TouchableOpacity
+                    style={[styles.modelChip, styles.modelChipActive]}
+                    disabled={true}
+                  >
+                    <Text
+                      style={[styles.modelChipText, styles.modelChipTextActive]}
+                    >
+                      Medium (Quantized)
+                    </Text>
+                    <Text
+                      style={[styles.modelSizeText, styles.modelSizeTextActive]}
+                    >
+                      510 MB (Bundled Offline)
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        )}
-      </View>
-
-      {/* 5. Enable Debug Logs Card */}
-      <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <View style={[styles.iconContainer, { backgroundColor: 'rgba(56, 189, 248, 0.12)' }]}>
-            <Icon name="list" size={18} color={COLORS.secondary} />
-          </View>
-          <Text style={[styles.cardTitle, { flex: 1 }]}>Enable Debug Logs</Text>
-          <Switch
-            value={enableDebugLogs}
-            onValueChange={handleDebugLogsToggle}
-            thumbColor={enableDebugLogs ? COLORS.secondary : '#9CA3AF'}
-            trackColor={{ true: COLORS.primaryLightBg, false: COLORS.grayTrack }}
-            style={{ marginLeft: 8 }}
-          />
+          )}
         </View>
-        <Text style={styles.cardDescription}>
-          Print key verification and transcription logs (helpful for local debugging).
-        </Text>
-      </View>
 
-      {/* Divider */}
-      <View style={styles.divider} />
+        {/* 5. Enable Debug Logs Card */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <View
+              style={[
+                styles.iconContainer,
+                { backgroundColor: "rgba(56, 189, 248, 0.12)" },
+              ]}
+            >
+              <Icon name="list" size={18} color={COLORS.secondary} />
+            </View>
+            <Text style={[styles.cardTitle, { flex: 1 }]}>
+              Enable Debug Logs
+            </Text>
+            <Switch
+              value={enableDebugLogs}
+              onValueChange={handleDebugLogsToggle}
+              thumbColor={enableDebugLogs ? COLORS.secondary : "#9CA3AF"}
+              trackColor={{
+                true: COLORS.primaryLightBg,
+                false: COLORS.grayTrack,
+              }}
+              style={{ marginLeft: 8 }}
+            />
+          </View>
+          <Text style={styles.cardDescription}>
+            Print key verification and transcription logs (helpful for local
+            debugging).
+          </Text>
+        </View>
 
-      {/* 6. Clear All History & Settings */}
-      <TouchableOpacity style={styles.clearBtn} onPress={handleClearAll}>
-        <Icon name="trash-2" size={18} color="#EF4444" style={{ marginRight: 8 }} />
-        <Text style={styles.clearBtnText}>Clear All History & Settings</Text>
-      </TouchableOpacity>
+        {/* Divider */}
+        <View style={styles.divider} />
+
+        {/* 6. Clear All History & Settings */}
+        <TouchableOpacity style={styles.clearBtn} onPress={handleClearAll}>
+          <Icon
+            name="trash-2"
+            size={18}
+            color="#EF4444"
+            style={{ marginRight: 8 }}
+          />
+          <Text style={styles.clearBtnText}>Clear All History & Settings</Text>
+        </TouchableOpacity>
       </ScrollView>
     </ImageBackground>
   );
@@ -600,12 +660,13 @@ export function SettingsScreen() {
 const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   scrollView: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
+    marginBottom: 96,
   },
   root: {
     flex: 1,
@@ -613,7 +674,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
-    paddingBottom: 110,
+    paddingBottom: 24,
   },
   card: {
     backgroundColor: COLORS.white,

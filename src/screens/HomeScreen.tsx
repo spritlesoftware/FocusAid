@@ -483,13 +483,14 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     backgroundColor: "transparent",
+    marginBottom: 96,
   },
   root: {
     flex: 1,
     backgroundColor: COLORS.neutral,
   },
   content: {
-    paddingBottom: 110,
+    paddingBottom: 24,
     alignItems: "center",
   },
   topCardContainer: {
