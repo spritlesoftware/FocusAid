@@ -186,8 +186,8 @@ The `PermissionGateView` handles runtime permission requests for both microphone
 
 ```bash
 # 1. Clone the repo
-git clone git@github.com:sathyapriya31/HearingFocus.git
-cd HearingFocus
+git clone git@github.com:spritlesoftware/FocusAid.git
+cd FocusAid
 
 # 2. Install pods
 cd ios
