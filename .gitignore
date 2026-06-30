@@ -1,7 +1,9 @@
-# OSX
+# ─── macOS ───────────────────────────────────────────────────────────────────
 .DS_Store
+.AppleDouble
+.LSOverride
 
-# Xcode
+# ─── Xcode ───────────────────────────────────────────────────────────────────
 build/
 *.pbxuser
 !default.pbxuser
@@ -11,69 +13,49 @@ build/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-xcuserdata
+xcuserdata/
 *.xccheckout
 *.moved-to-trash
-DerivedData
+DerivedData/
 *.hmap
 *.ipa
 *.xcuserstate
+*.xcscmblueprint
+# Local Xcode env (machine-specific Node path)
 ios/.xcode.env.local
+# Per-user Xcode scheme data
+ios/*.xcodeproj/xcuserdata/
+ios/*.xcworkspace/xcuserdata/
+ios/*.xcworkspace/xcshareddata/swiftpm/
 
-# Android
-android/app/build/
-android/app/.cxx/
-android/.gradle/
-android/local.properties
-android/app/release/
-android/app/src/main/assets/index.android.bundle
-android/app/src/main/res/drawable-*
-android/app/src/main/res/raw/
+# ─── CocoaPods ───────────────────────────────────────────────────────────────
+ios/Pods/
+ios/build/
+# Podfile.lock should be committed for reproducible installs in a team.
+# Uncomment below only if you manage deps purely via the Podfile version ranges.
+# ios/Podfile.lock
 
-# Node
-node_modules/
-npm-debug.log
-yarn-error.log
-yarn.lock
-package-lock.json
-
-# React Native
-.expo/
-dist/
-web-build/
-.bundle
-
-# Metro
-.metro-health-check*
-
-# Env & secrets
+# ─── Environment & secrets ───────────────────────────────────────────────────
 .env
 .env.*
 !.env.example
 
-# Models (large binary files — download at runtime)
-android/app/src/main/assets/models/
+# ─── ML Models (large binary — download at runtime) ──────────────────────────
 ios/models/
 
-# WAV clips generated at runtime
-android/app/src/main/assets/clips/
-
-# Gradle cache
-.gradle/
-
-# CocoaPods
-ios/Pods/
-ios/build/
-ios/Podfile.lock
-
-# TypeScript
-*.tsbuildinfo
-
-# Misc
-*.log
-*.orig
-coverage/
-__snapshots__/
+# ─── Editors & IDEs ──────────────────────────────────────────────────────────
 .vscode/
 .idea/
 *.iml
+*.swp
+*.swo
+*~
+
+# ─── Logs & misc ─────────────────────────────────────────────────────────────
+*.log
+*.orig
+
+# ─── AI / tool-generated ─────────────────────────────────────────────────────
+.claude/
+scratch/
+walkthrough.md

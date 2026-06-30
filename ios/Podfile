@@ -1,19 +1,4 @@
-# Resolve react_native_pods.rb with node to allow for hoisting
-require Pod::Executable.execute_command('node', ['-p',
-  'require.resolve(
-    "react-native/scripts/react_native_pods.rb",
-    {paths: [process.argv[1]]},
-  )', __dir__]).strip
-
-require_relative '../node_modules/react-native-permissions/scripts/setup'
-
-# react-native-permissions: declare only the permissions your app uses
-setup_permissions([
-  'Microphone',
-])
-
-platform :ios, min_ios_version_supported
-prepare_react_native_project!
+platform :ios, '17.0'
 
 # Define Swift / TF Lite pods that must be built as static frameworks
 $static_pods = ['TensorFlowLiteSwift', 'TensorFlowLiteC']
@@ -27,30 +12,14 @@ pre_install do |installer|
   end
 end
 
-target 'HearingTriggerRN' do
-  config = use_native_modules!
+target 'FocusAid' do
+  use_frameworks!
 
   # YAMNet acoustic scene classification — on-device TFLite inference
   pod 'TensorFlowLiteSwift', '~> 2.14.0'
 
-  use_react_native!(
-    :path => config[:reactNativePath],
-    # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
-  )
-
-  target 'HearingTriggerRNTests' do
+  target 'FocusAidTests' do
     inherit! :complete
     # Pods for testing
-  end
-
-  post_install do |installer|
-    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
-    react_native_post_install(
-      installer,
-      config[:reactNativePath],
-      :mac_catalyst_enabled => false,
-      # :ccache_enabled => true
-    )
   end
 end

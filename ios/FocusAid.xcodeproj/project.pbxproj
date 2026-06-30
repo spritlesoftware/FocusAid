@@ -1,0 +1,866 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00E356F31AD99517003FC87E /* HearingTriggerRNTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* HearingTriggerRNTests.m */; };
+		0C4549CDBCECAB825CD995D4 /* HearingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A14FF0AFABEBA3FCC45CBB /* HearingManager.swift */; };
+		0C485E57DD612C4E8E059BC1 /* Pods_FocusAid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57E2DF73A5DCC2109EE87C6D /* Pods_FocusAid.framework */; };
+		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		1C8D466EA1735BE7690926E5 /* SpeechTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5954CD3B2039BD905855D12 /* SpeechTranscriber.swift */; };
+		1F294E0A8745D85E2932315A /* VADEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0E4A0A80211B602741F609 /* VADEngine.swift */; };
+		311A470380B011E8CDCF7646 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E4440C99D5333D3337FD3A /* SettingsView.swift */; };
+		37CB4A40B9EFC79297F2D547 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C8E4E92AAF3DDD5EF3E0E3E /* SettingsStore.swift */; };
+		405B435199C6B4AF5BC14B52 /* VADEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0E4A0A80211B602741F609 /* VADEngine.swift */; };
+		49624CD8B8E8E2E159609124 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8944FABE9806ED9CF94FCD /* Colors.swift */; };
+		4EAD44A7ABCB6CF4C92914C9 /* DetectionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3E4AB888A5CBDCC4590942 /* DetectionRecord.swift */; };
+		63DF4075AC888394C8EAAC91 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224F4C739D3CE0C0B94C8610 /* HistoryView.swift */; };
+		6611471C90F8142D9B9E371C /* PermissionGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8774F7E8233542A2E779438 /* PermissionGateView.swift */; };
+		6A3C4296A03B4CB7330C1057 /* AcousticSceneDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AB4512A20F23B2EC134ABE /* AcousticSceneDetector.swift */; };
+		6AFA435184D9D16A9A1F47B3 /* HearingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A14FF0AFABEBA3FCC45CBB /* HearingManager.swift */; };
+		6D0A4B4D9C369F74E0D92FD9 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A84DA29CA5EAE4A790DDD1 /* HomeView.swift */; };
+		7255447A84CCB2EBE940B655 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0324D6693D98D07321B4786 /* MainTabView.swift */; };
+		7D934BB5BBE49289F16285D1 /* PulseRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2F4BD8B9A47F29D322F75B /* PulseRingView.swift */; };
+		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		911E410DA9BDCF9B98B1FC59 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C8E4E92AAF3DDD5EF3E0E3E /* SettingsStore.swift */; };
+		956641CC901686CECD5EF286 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0324D6693D98D07321B4786 /* MainTabView.swift */; };
+		A0A0A0A0A0A0A0A0A0A0F002 /* FontHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0A0A0A0A0A0A0A0A0A0F001 /* FontHelper.swift */; };
+		A0A0A0A0A0A0A0A0A0A0F003 /* FontHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0A0A0A0A0A0A0A0A0A0F001 /* FontHelper.swift */; };
+		A0A0A0A0A0A0A0A0A0A0F021 /* GoogleSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0A0A0A0A0A0A0A0A0A0F011 /* GoogleSans-Regular.ttf */; };
+		A0A0A0A0A0A0A0A0A0A0F022 /* GoogleSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0A0A0A0A0A0A0A0A0A0F012 /* GoogleSans-Medium.ttf */; };
+		A0A0A0A0A0A0A0A0A0A0F023 /* GoogleSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0A0A0A0A0A0A0A0A0A0F013 /* GoogleSans-Bold.ttf */; };
+		A0A0A0A0A0A0A0A0A0A0F024 /* GoogleSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A0A0A0A0A0A0A0A0A0A0F014 /* GoogleSans-Italic.ttf */; };
+		A7834308A18244B4DFC37AEA /* PulseRingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2F4BD8B9A47F29D322F75B /* PulseRingView.swift */; };
+		B1C2D3E4F5A6B7C8D9E0F1A3 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5A6B7C8D9E0F1A2 /* SplashScreenView.swift */; };
+		B1C2D3E4F5A6B7C8D9E0F1A4 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5A6B7C8D9E0F1A2 /* SplashScreenView.swift */; };
+		BC89439E99959C121EA20F2A /* SpeechTranscriber.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5954CD3B2039BD905855D12 /* SpeechTranscriber.swift */; };
+		BFB1400D867E0D6CEBB5DB59 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8944FABE9806ED9CF94FCD /* Colors.swift */; };
+		C6A649A2B389B9A722128E23 /* DetectionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25543EA8457328D3ED0EE09 /* DetectionCardView.swift */; };
+		C7FC4ECF8254A2E6CD0AB1A0 /* DetectionCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C25543EA8457328D3ED0EE09 /* DetectionCardView.swift */; };
+		CB605F6C7D8466E94FA9298A /* Pods_FocusAid_FocusAidTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C65632079D99BCD491E075F /* Pods_FocusAid_FocusAidTests.framework */; };
+		D75747FA912FDCC554A6A4FF /* HearingTriggerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9A4DCE879630950CF6BED5 /* HearingTriggerApp.swift */; };
+		DAD843C89649745500F0F264 /* AcousticSceneDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AB4512A20F23B2EC134ABE /* AcousticSceneDetector.swift */; };
+		DBC565ADC60268C70D4EAB58 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		E35FB9240BC137DE5A6706E8 /* models in Resources */ = {isa = PBXBuildFile; fileRef = CB87C2367F0A788666653799 /* models */; };
+		E70745E299D4FAB207278AAA /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224F4C739D3CE0C0B94C8610 /* HistoryView.swift */; };
+		EA654A049E989EB07030862D /* HearingTriggerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9A4DCE879630950CF6BED5 /* HearingTriggerApp.swift */; };
+		EAB34BA8A206C513C3FDCD8E /* PermissionGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8774F7E8233542A2E779438 /* PermissionGateView.swift */; };
+		EC744BB99EEBE9F3B9B96FFC /* DetectionRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB3E4AB888A5CBDCC4590942 /* DetectionRecord.swift */; };
+		ED734ADC95C63BB364823513 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A84DA29CA5EAE4A790DDD1 /* HomeView.swift */; };
+		F69D4EDEA116800AF5085796 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56E4440C99D5333D3337FD3A /* SettingsView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		00E356F41AD99517003FC87E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
+			remoteInfo = FocusAid;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		00E356EE1AD99517003FC87E /* FocusAidTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FocusAidTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		00E356F21AD99517003FC87E /* HearingTriggerRNTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HearingTriggerRNTests.m; sourceTree = "<group>"; };
+		0C07E70834CCE81C278F5416 /* Pods-FocusAid.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FocusAid.debug.xcconfig"; path = "Target Support Files/Pods-FocusAid/Pods-FocusAid.debug.xcconfig"; sourceTree = "<group>"; };
+		0E30ABEADF0B19ACDAC4F0D8 /* Pods-HearingTriggerRN.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HearingTriggerRN.debug.xcconfig"; path = "Target Support Files/Pods-HearingTriggerRN/Pods-HearingTriggerRN.debug.xcconfig"; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* FocusAid.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FocusAid.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = FocusAid/AppDelegate.h; sourceTree = "<group>"; };
+		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = FocusAid/AppDelegate.mm; sourceTree = "<group>"; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = FocusAid/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = FocusAid/Info.plist; sourceTree = "<group>"; };
+		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = FocusAid/main.m; sourceTree = "<group>"; };
+		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = FocusAid/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		1454C803AB3438DBF5DA83EA /* Pods-FocusAid.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FocusAid.release.xcconfig"; path = "Target Support Files/Pods-FocusAid/Pods-FocusAid.release.xcconfig"; sourceTree = "<group>"; };
+		1C65632079D99BCD491E075F /* Pods_FocusAid_FocusAidTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FocusAid_FocusAidTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		224F4C739D3CE0C0B94C8610 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HistoryView.swift; path = FocusAid/HearingTriggerSwift/UI/HistoryView.swift; sourceTree = SOURCE_ROOT; };
+		37D4F91E61548E57B31EC863 /* Pods-HearingTriggerRN.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HearingTriggerRN.release.xcconfig"; path = "Target Support Files/Pods-HearingTriggerRN/Pods-HearingTriggerRN.release.xcconfig"; sourceTree = "<group>"; };
+		3E09F718184B30E01031A493 /* Pods-HearingTriggerRN-HearingTriggerRNTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HearingTriggerRN-HearingTriggerRNTests.release.xcconfig"; path = "Target Support Files/Pods-HearingTriggerRN-HearingTriggerRNTests/Pods-HearingTriggerRN-HearingTriggerRNTests.release.xcconfig"; sourceTree = "<group>"; };
+		434A7E0439CC4C5A872EB5E1 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = ../assets/fonts/Ionicons.ttf; sourceTree = "<group>"; };
+		56E4440C99D5333D3337FD3A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = FocusAid/HearingTriggerSwift/UI/SettingsView.swift; sourceTree = SOURCE_ROOT; };
+		57A14FF0AFABEBA3FCC45CBB /* HearingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HearingManager.swift; path = FocusAid/HearingTriggerSwift/Services/HearingManager.swift; sourceTree = SOURCE_ROOT; };
+		57E2DF73A5DCC2109EE87C6D /* Pods_FocusAid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FocusAid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5958825083F84B518E755B80 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = ../assets/fonts/Feather.ttf; sourceTree = "<group>"; };
+		65BFBB8D5998B5ED81BE94D6 /* Pods-FocusAid-FocusAidTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FocusAid-FocusAidTests.debug.xcconfig"; path = "Target Support Files/Pods-FocusAid-FocusAidTests/Pods-FocusAid-FocusAidTests.debug.xcconfig"; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = FocusAid/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8C8E4E92AAF3DDD5EF3E0E3E /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SettingsStore.swift; path = FocusAid/HearingTriggerSwift/Data/SettingsStore.swift; sourceTree = SOURCE_ROOT; };
+		96A84DA29CA5EAE4A790DDD1 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HomeView.swift; path = FocusAid/HearingTriggerSwift/UI/HomeView.swift; sourceTree = SOURCE_ROOT; };
+		97AB4512A20F23B2EC134ABE /* AcousticSceneDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AcousticSceneDetector.swift; path = FocusAid/HearingTriggerSwift/Services/AcousticSceneDetector.swift; sourceTree = SOURCE_ROOT; };
+		9D2F4BD8B9A47F29D322F75B /* PulseRingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PulseRingView.swift; path = FocusAid/HearingTriggerSwift/UI/Components/PulseRingView.swift; sourceTree = SOURCE_ROOT; };
+		A081D0C85F04C9ABF82B6BDB /* Pods-HearingTriggerRN-HearingTriggerRNTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HearingTriggerRN-HearingTriggerRNTests.debug.xcconfig"; path = "Target Support Files/Pods-HearingTriggerRN-HearingTriggerRNTests/Pods-HearingTriggerRN-HearingTriggerRNTests.debug.xcconfig"; sourceTree = "<group>"; };
+		A0A0A0A0A0A0A0A0A0A0F001 /* FontHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FontHelper.swift; path = FocusAid/HearingTriggerSwift/UI/FontHelper.swift; sourceTree = SOURCE_ROOT; };
+		A0A0A0A0A0A0A0A0A0A0F011 /* GoogleSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "GoogleSans-Regular.ttf"; path = "FocusAid/Fonts/GoogleSans-Regular.ttf"; sourceTree = "<group>"; };
+		A0A0A0A0A0A0A0A0A0A0F012 /* GoogleSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "GoogleSans-Medium.ttf"; path = "FocusAid/Fonts/GoogleSans-Medium.ttf"; sourceTree = "<group>"; };
+		A0A0A0A0A0A0A0A0A0A0F013 /* GoogleSans-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "GoogleSans-Bold.ttf"; path = "FocusAid/Fonts/GoogleSans-Bold.ttf"; sourceTree = "<group>"; };
+		A0A0A0A0A0A0A0A0A0A0F014 /* GoogleSans-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "GoogleSans-Italic.ttf"; path = "FocusAid/Fonts/GoogleSans-Italic.ttf"; sourceTree = "<group>"; };
+		A8774F7E8233542A2E779438 /* PermissionGateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PermissionGateView.swift; path = FocusAid/HearingTriggerSwift/UI/PermissionGateView.swift; sourceTree = SOURCE_ROOT; };
+		B1C2D3E4F5A6B7C8D9E0F1A2 /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SplashScreenView.swift; path = FocusAid/HearingTriggerSwift/UI/SplashScreenView.swift; sourceTree = SOURCE_ROOT; };
+		C236E5BAEEE95D1827F8FAA8 /* Pods-FocusAid-FocusAidTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FocusAid-FocusAidTests.release.xcconfig"; path = "Target Support Files/Pods-FocusAid-FocusAidTests/Pods-FocusAid-FocusAidTests.release.xcconfig"; sourceTree = "<group>"; };
+		C25543EA8457328D3ED0EE09 /* DetectionCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DetectionCardView.swift; path = FocusAid/HearingTriggerSwift/UI/Components/DetectionCardView.swift; sourceTree = SOURCE_ROOT; };
+		C5954CD3B2039BD905855D12 /* SpeechTranscriber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SpeechTranscriber.swift; path = FocusAid/HearingTriggerSwift/Services/SpeechTranscriber.swift; sourceTree = SOURCE_ROOT; };
+		CB87C2367F0A788666653799 /* models */ = {isa = PBXFileReference; lastKnownFileType = folder; path = models; sourceTree = "<group>"; };
+		DD8944FABE9806ED9CF94FCD /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = FocusAid/HearingTriggerSwift/UI/Colors.swift; sourceTree = SOURCE_ROOT; };
+		E0324D6693D98D07321B4786 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MainTabView.swift; path = FocusAid/HearingTriggerSwift/UI/MainTabView.swift; sourceTree = SOURCE_ROOT; };
+		EB3E4AB888A5CBDCC4590942 /* DetectionRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DetectionRecord.swift; path = FocusAid/HearingTriggerSwift/Data/DetectionRecord.swift; sourceTree = SOURCE_ROOT; };
+		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		EE9A4DCE879630950CF6BED5 /* HearingTriggerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HearingTriggerApp.swift; path = FocusAid/HearingTriggerSwift/HearingTriggerApp.swift; sourceTree = SOURCE_ROOT; };
+		FF0E4A0A80211B602741F609 /* VADEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VADEngine.swift; path = FocusAid/HearingTriggerSwift/Services/VADEngine.swift; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		00E356EB1AD99517003FC87E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB605F6C7D8466E94FA9298A /* Pods_FocusAid_FocusAidTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0C485E57DD612C4E8E059BC1 /* Pods_FocusAid.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		00E356EF1AD99517003FC87E /* FocusAidTests */ = {
+			isa = PBXGroup;
+			children = (
+				00E356F21AD99517003FC87E /* HearingTriggerRNTests.m */,
+				00E356F01AD99517003FC87E /* Supporting Files */,
+			);
+			path = FocusAidTests;
+			sourceTree = "<group>";
+		};
+		00E356F01AD99517003FC87E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				00E356F11AD99517003FC87E /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		07D7485EBAD07B7BC4986679 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				A0A0A0A0A0A0A0A0A0A0F001 /* FontHelper.swift */,
+				E0324D6693D98D07321B4786 /* MainTabView.swift */,
+				56E4440C99D5333D3337FD3A /* SettingsView.swift */,
+				96A84DA29CA5EAE4A790DDD1 /* HomeView.swift */,
+				A8774F7E8233542A2E779438 /* PermissionGateView.swift */,
+				B1C2D3E4F5A6B7C8D9E0F1A2 /* SplashScreenView.swift */,
+				18354E9590399BE35083AF93 /* Components */,
+				224F4C739D3CE0C0B94C8610 /* HistoryView.swift */,
+				DD8944FABE9806ED9CF94FCD /* Colors.swift */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		13B07FAE1A68108700A75B9A /* FocusAid */ = {
+			isa = PBXGroup;
+			children = (
+				A0A0A0A0A0A0A0A0A0A0F011 /* GoogleSans-Regular.ttf */,
+				A0A0A0A0A0A0A0A0A0A0F012 /* GoogleSans-Medium.ttf */,
+				A0A0A0A0A0A0A0A0A0A0F013 /* GoogleSans-Bold.ttf */,
+				A0A0A0A0A0A0A0A0A0A0F014 /* GoogleSans-Italic.ttf */,
+				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
+				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
+				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				13B07FB61A68108700A75B9A /* Info.plist */,
+				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
+				13B07FB71A68108700A75B9A /* main.m */,
+				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+				7FE5432CA6645D3EC19CD5EB /* HearingTriggerSwift */,
+			);
+			name = FocusAid;
+			sourceTree = "<group>";
+		};
+		18354E9590399BE35083AF93 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				9D2F4BD8B9A47F29D322F75B /* PulseRingView.swift */,
+				C25543EA8457328D3ED0EE09 /* DetectionCardView.swift */,
+			);
+			name = Components;
+			sourceTree = "<group>";
+		};
+		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
+				57E2DF73A5DCC2109EE87C6D /* Pods_FocusAid.framework */,
+				1C65632079D99BCD491E075F /* Pods_FocusAid_FocusAidTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7FE5432CA6645D3EC19CD5EB /* HearingTriggerSwift */ = {
+			isa = PBXGroup;
+			children = (
+				07D7485EBAD07B7BC4986679 /* UI */,
+				EE9A4DCE879630950CF6BED5 /* HearingTriggerApp.swift */,
+				C90242C39EA48D0562825D96 /* Data */,
+				D6454160863FAC57EBEFD1EB /* Services */,
+			);
+			name = HearingTriggerSwift;
+			sourceTree = "<group>";
+		};
+		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		83CBB9F61A601CBA00E9B192 = {
+			isa = PBXGroup;
+			children = (
+				13B07FAE1A68108700A75B9A /* FocusAid */,
+				832341AE1AAA6A7D00B99B32 /* Libraries */,
+				00E356EF1AD99517003FC87E /* FocusAidTests */,
+				83CBBA001A601CBA00E9B192 /* Products */,
+				2D16E6871FA4F8E400B85C8A /* Frameworks */,
+				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				EFCE60D090994E589130FC13 /* Resources */,
+				CB87C2367F0A788666653799 /* models */,
+			);
+			indentWidth = 2;
+			sourceTree = "<group>";
+			tabWidth = 2;
+			usesTabs = 0;
+		};
+		83CBBA001A601CBA00E9B192 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				13B07F961A680F5B00A75B9A /* FocusAid.app */,
+				00E356EE1AD99517003FC87E /* FocusAidTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0E30ABEADF0B19ACDAC4F0D8 /* Pods-HearingTriggerRN.debug.xcconfig */,
+				37D4F91E61548E57B31EC863 /* Pods-HearingTriggerRN.release.xcconfig */,
+				A081D0C85F04C9ABF82B6BDB /* Pods-HearingTriggerRN-HearingTriggerRNTests.debug.xcconfig */,
+				3E09F718184B30E01031A493 /* Pods-HearingTriggerRN-HearingTriggerRNTests.release.xcconfig */,
+				0C07E70834CCE81C278F5416 /* Pods-FocusAid.debug.xcconfig */,
+				1454C803AB3438DBF5DA83EA /* Pods-FocusAid.release.xcconfig */,
+				65BFBB8D5998B5ED81BE94D6 /* Pods-FocusAid-FocusAidTests.debug.xcconfig */,
+				C236E5BAEEE95D1827F8FAA8 /* Pods-FocusAid-FocusAidTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		C90242C39EA48D0562825D96 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				EB3E4AB888A5CBDCC4590942 /* DetectionRecord.swift */,
+				8C8E4E92AAF3DDD5EF3E0E3E /* SettingsStore.swift */,
+			);
+			name = Data;
+			sourceTree = "<group>";
+		};
+		D6454160863FAC57EBEFD1EB /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				FF0E4A0A80211B602741F609 /* VADEngine.swift */,
+				97AB4512A20F23B2EC134ABE /* AcousticSceneDetector.swift */,
+				C5954CD3B2039BD905855D12 /* SpeechTranscriber.swift */,
+				57A14FF0AFABEBA3FCC45CBB /* HearingManager.swift */,
+			);
+			name = Services;
+			sourceTree = "<group>";
+		};
+		EFCE60D090994E589130FC13 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				5958825083F84B518E755B80 /* Feather.ttf */,
+				434A7E0439CC4C5A872EB5E1 /* Ionicons.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		00E356ED1AD99517003FC87E /* FocusAidTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "FocusAidTests" */;
+			buildPhases = (
+				8E4949FAB6FFCD3B6901E961 /* [CP] Check Pods Manifest.lock */,
+				00E356EA1AD99517003FC87E /* Sources */,
+				00E356EB1AD99517003FC87E /* Frameworks */,
+				00E356EC1AD99517003FC87E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				00E356F51AD99517003FC87E /* PBXTargetDependency */,
+			);
+			name = FocusAidTests;
+			productName = FocusAidTests;
+			productReference = 00E356EE1AD99517003FC87E /* FocusAidTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		13B07F861A680F5B00A75B9A /* FocusAid */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "FocusAid" */;
+			buildPhases = (
+				C502E92CC2F6331BAC76DA04 /* [CP] Check Pods Manifest.lock */,
+				13B07F871A680F5B00A75B9A /* Sources */,
+				13B07F8C1A680F5B00A75B9A /* Frameworks */,
+				13B07F8E1A680F5B00A75B9A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FocusAid;
+			productName = FocusAid;
+			productReference = 13B07F961A680F5B00A75B9A /* FocusAid.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		83CBB9F71A601CBA00E9B192 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1210;
+				TargetAttributes = {
+					00E356ED1AD99517003FC87E = {
+						CreatedOnToolsVersion = 6.2;
+						TestTargetID = 13B07F861A680F5B00A75B9A;
+					};
+					13B07F861A680F5B00A75B9A = {
+						LastSwiftMigration = 1120;
+					};
+				};
+			};
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "FocusAid" */;
+			compatibilityVersion = "Xcode 12.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 83CBB9F61A601CBA00E9B192;
+			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				13B07F861A680F5B00A75B9A /* FocusAid */,
+				00E356ED1AD99517003FC87E /* FocusAidTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		00E356EC1AD99517003FC87E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		13B07F8E1A680F5B00A75B9A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0A0A0A0A0A0A0A0A0A0F021 /* GoogleSans-Regular.ttf in Resources */,
+				A0A0A0A0A0A0A0A0A0A0F022 /* GoogleSans-Medium.ttf in Resources */,
+				A0A0A0A0A0A0A0A0A0A0F023 /* GoogleSans-Bold.ttf in Resources */,
+				A0A0A0A0A0A0A0A0A0A0F024 /* GoogleSans-Italic.ttf in Resources */,
+				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				DBC565ADC60268C70D4EAB58 /* PrivacyInfo.xcprivacy in Resources */,
+				E35FB9240BC137DE5A6706E8 /* models in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		8E4949FAB6FFCD3B6901E961 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FocusAid-FocusAidTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C502E92CC2F6331BAC76DA04 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FocusAid-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		00E356EA1AD99517003FC87E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0A0A0A0A0A0A0A0A0A0F003 /* FontHelper.swift in Sources */,
+				00E356F31AD99517003FC87E /* HearingTriggerRNTests.m in Sources */,
+				956641CC901686CECD5EF286 /* MainTabView.swift in Sources */,
+				311A470380B011E8CDCF7646 /* SettingsView.swift in Sources */,
+				6D0A4B4D9C369F74E0D92FD9 /* HomeView.swift in Sources */,
+				EAB34BA8A206C513C3FDCD8E /* PermissionGateView.swift in Sources */,
+				B1C2D3E4F5A6B7C8D9E0F1A3 /* SplashScreenView.swift in Sources */,
+				A7834308A18244B4DFC37AEA /* PulseRingView.swift in Sources */,
+				C6A649A2B389B9A722128E23 /* DetectionCardView.swift in Sources */,
+				63DF4075AC888394C8EAAC91 /* HistoryView.swift in Sources */,
+				BFB1400D867E0D6CEBB5DB59 /* Colors.swift in Sources */,
+				D75747FA912FDCC554A6A4FF /* HearingTriggerApp.swift in Sources */,
+				4EAD44A7ABCB6CF4C92914C9 /* DetectionRecord.swift in Sources */,
+				911E410DA9BDCF9B98B1FC59 /* SettingsStore.swift in Sources */,
+				405B435199C6B4AF5BC14B52 /* VADEngine.swift in Sources */,
+				DAD843C89649745500F0F264 /* AcousticSceneDetector.swift in Sources */,
+				BC89439E99959C121EA20F2A /* SpeechTranscriber.swift in Sources */,
+				6AFA435184D9D16A9A1F47B3 /* HearingManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		13B07F871A680F5B00A75B9A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0A0A0A0A0A0A0A0A0A0F002 /* FontHelper.swift in Sources */,
+				7255447A84CCB2EBE940B655 /* MainTabView.swift in Sources */,
+				F69D4EDEA116800AF5085796 /* SettingsView.swift in Sources */,
+				ED734ADC95C63BB364823513 /* HomeView.swift in Sources */,
+				6611471C90F8142D9B9E371C /* PermissionGateView.swift in Sources */,
+				B1C2D3E4F5A6B7C8D9E0F1A4 /* SplashScreenView.swift in Sources */,
+				7D934BB5BBE49289F16285D1 /* PulseRingView.swift in Sources */,
+				C7FC4ECF8254A2E6CD0AB1A0 /* DetectionCardView.swift in Sources */,
+				E70745E299D4FAB207278AAA /* HistoryView.swift in Sources */,
+				49624CD8B8E8E2E159609124 /* Colors.swift in Sources */,
+				EA654A049E989EB07030862D /* HearingTriggerApp.swift in Sources */,
+				EC744BB99EEBE9F3B9B96FFC /* DetectionRecord.swift in Sources */,
+				37CB4A40B9EFC79297F2D547 /* SettingsStore.swift in Sources */,
+				1F294E0A8745D85E2932315A /* VADEngine.swift in Sources */,
+				6A3C4296A03B4CB7330C1057 /* AcousticSceneDetector.swift in Sources */,
+				1C8D466EA1735BE7690926E5 /* SpeechTranscriber.swift in Sources */,
+				0C4549CDBCECAB825CD995D4 /* HearingManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 13B07F861A680F5B00A75B9A /* FocusAid */;
+			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		00E356F61AD99517003FC87E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 65BFBB8D5998B5ED81BE94D6 /* Pods-FocusAid-FocusAidTests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = FocusAidTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/UI",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/UI/Components",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/Data",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/Services",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-lc++",
+					"$(inherited)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FocusAid.app/FocusAid";
+			};
+			name = Debug;
+		};
+		00E356F71AD99517003FC87E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C236E5BAEEE95D1827F8FAA8 /* Pods-FocusAid-FocusAidTests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				COPY_PHASE_STRIP = NO;
+				INFOPLIST_FILE = FocusAidTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/UI",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/UI/Components",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/Data",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/Services",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-lc++",
+					"$(inherited)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FocusAid.app/FocusAid";
+			};
+			name = Release;
+		};
+		13B07F941A680F5B00A75B9A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0C07E70834CCE81C278F5416 /* Pods-FocusAid.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TR66M2SP7Y;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = FocusAid/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FocusAid;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/UI",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/UI/Components",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/Data",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/Services",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.spritle.hearingtrigger;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.spritle.hearingtrigger;
+				PRODUCT_NAME = FocusAid;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		13B07F951A680F5B00A75B9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1454C803AB3438DBF5DA83EA /* Pods-FocusAid.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TR66M2SP7Y;
+				INFOPLIST_FILE = FocusAid/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FocusAid;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/UI",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/UI/Components",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/Data",
+					"$(SRCROOT)/FocusAid/HearingTriggerSwift/Services",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.spritle.hearingtrigger;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.spritle.hearingtrigger;
+				PRODUCT_NAME = FocusAid;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		83CBBA201A601CBA00E9B192 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers/react/renderer/components/view/platform/cxx",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)/usr/lib/swift\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+					"-DFOLLY_CFG_NO_COROUTINES=1",
+					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				USE_HERMES = YES;
+			};
+			name = Debug;
+		};
+		83CBBA211A601CBA00E9B192 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-Fabric/React_Fabric.framework/Headers/react/renderer/components/view/platform/cxx",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers",
+					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SDKROOT)/usr/lib/swift\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+					"-DFOLLY_CFG_NO_COROUTINES=1",
+					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
+				SDKROOT = iphoneos;
+				USE_HERMES = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "FocusAidTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00E356F61AD99517003FC87E /* Debug */,
+				00E356F71AD99517003FC87E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "FocusAid" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				13B07F941A680F5B00A75B9A /* Debug */,
+				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "FocusAid" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83CBBA201A601CBA00E9B192 /* Debug */,
+				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
+}
