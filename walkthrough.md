@@ -52,15 +52,13 @@ graph TD
 
 ## 3. UI Overview & Layouts
 
-Below is the visual overview of the live listening dashboard state:
+Below is the visual overview of the live listening dashboard states:
 
-### Active Listening State
-![Active Listening](docs/screenshot_active.png)
-*Active UI showing real-time scene classification (Office, Hall, etc.) alongside pulsed mic ring animation and recent detections.*
+| Active Listening State | Mic Inactive State |
+|:---:|:---:|
+| <img src="docs/screenshot_active.png" width="280" alt="Active Listening"> | <img src="docs/screenshot_idle.png" width="280" alt="Mic Inactive"> |
 
-### Mic Inactive State
-![Mic Inactive](docs/screenshot_idle.png)
-*Idle dashboard indicating audio processing is paused.*
+*Left: Active UI showing real-time scene classification (Office, Hall, etc.) alongside pulsed mic ring animation and recent detections. Right: Idle dashboard indicating audio processing is paused.*
 
 ---
 

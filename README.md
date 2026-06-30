@@ -8,7 +8,7 @@ A native iOS app that listens locally for user-configured trigger words and aler
 
 | Active Listening | Mic Inactive |
 |:---:|:---:|
-| ![Active Listening](docs/screenshot_active.png) | ![Mic Inactive](docs/screenshot_idle.png) |
+| <img src="docs/screenshot_active.png" width="280" alt="Active Listening"> | <img src="docs/screenshot_idle.png" width="280" alt="Mic Inactive"> |
 
 > *Listen tab showing active keyword detection with acoustic scene badge (Hall) and a recent detection card confirming "help" at 70% confidence.*
 
