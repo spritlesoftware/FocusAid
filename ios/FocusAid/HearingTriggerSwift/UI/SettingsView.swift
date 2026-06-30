@@ -11,7 +11,7 @@ public struct SettingsView: View {
     public init() {}
 
     private var presetChips: [String] {
-        var combined = ["priya", "aarav", "grandma", "mom", "dad", "help"]
+        var combined = ["grandma", "mom", "dad", "help"]
         for kw in manager.settings.keywords where !combined.contains(kw) {
             combined.append(kw)
         }

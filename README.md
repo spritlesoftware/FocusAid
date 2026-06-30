@@ -16,7 +16,7 @@ A native iOS app that listens locally for user-configured trigger words and aler
 
 ## Features
 
-- **Always-on keyword spotting** — listens for multiple trigger words simultaneously (e.g. "priya", "aarav", "grandma", "mom", "dad", "help")
+- **Always-on keyword spotting** — listens for multiple trigger words simultaneously (e.g. "grandma", "mom", "dad", "help")
 - **Acoustic scene classification** — YAMNet TFLite model detects the ambient environment (Hall, Office, Restaurant, etc.) and tags each detection
 - **Voice Activity Detection (VAD)** — custom VAD engine avoids processing silence, reducing CPU usage
 - **On-device speech transcription** — Apple's `SFSpeechRecognizer` transcribes a short clip after each keyword hit for confirmation
@@ -136,7 +136,7 @@ AcousticSceneDetector         SpeechTranscriber
 **Active state**
 - Animated `PulseRingView` around the mic icon
 - Label: `ACTIVE LISTENING`
-- Trigger words listed: *"priya", "aarav", "grandma", "mom", "dad", "help"*
+- Trigger words listed: *"grandma", "mom", "dad", "help"*
 - Scene badge showing current acoustic environment (e.g. **Hall**, **Office**)
 - **Stop Listening** button
 

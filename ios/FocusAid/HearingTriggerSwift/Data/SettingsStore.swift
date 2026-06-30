@@ -31,7 +31,7 @@ public class SettingsStore {
     
     public init() {
         // Load default values first
-        self.keywords = ["priya", "aarav", "grandma", "mom", "dad", "help"]
+        self.keywords = [ "grandma", "mom", "dad", "help"]
         self.threshold = 0.5
         self.cooldownMs = 6000
         self.useWhisper = true
