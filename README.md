@@ -35,7 +35,7 @@ A native iOS app that listens locally for user-configured trigger words and aler
 | Audio capture | AVFoundation (`AVAudioEngine`) |
 | Keyword detection | Custom VAD + pattern matching on PCM frames |
 | Scene classification | YAMNet via TensorFlow Lite (`TensorFlowLiteSwift ~> 2.14.0`) |
-| Speech transcription | `Speech` framework (`SFSpeechRecognizer`) |
+| Speech transcription | `Speech` framework (`SFSpeechRecognizer`) (with `WhisperTranscriber` placeholder prepared) |
 | Persistence | `UserDefaults` + `Codable` models |
 | Dependency manager | CocoaPods |
 | Min iOS target | iOS 17.6 |
@@ -214,7 +214,7 @@ open FocusAid.xcworkspace
 |---|---|
 | Pure native Swift (no React Native) | Direct AVAudioEngine access, no JS bridge latency for real-time audio frames |
 | TensorFlow Lite for scene detection | YAMNet runs fully on-device; no network call needed |
-| Apple `SFSpeechRecognizer` for ASR | Avoids bundling a large Whisper model; works offline via on-device model |
+| Apple `SFSpeechRecognizer` for ASR | Default active engine that avoids bundling a large Whisper model. A placeholder `WhisperTranscriber` is prepared in the codebase for future C-API integrations. |
 | VAD before keyword matching | Reduces CPU usage significantly in quiet environments |
 | CocoaPods (not SPM) | TensorFlowLiteSwift requires CocoaPods for static framework configuration |
 
