@@ -1,47 +1,75 @@
-# Walkthrough: Splash Screens, Offline Model Bundling & Latency Optimizations
+# Walkthrough: FocusAid Native SwiftUI Migration
 
-We have successfully integrated native splash screens, bundled the Whisper and KWS models directly inside the application, and optimized latency parameters to provide a snappy, fully offline experience.
-
----
-
-## 1. Native Splash Screens Integration
-
-- **Logo Generation**: Created a high-resolution logo graphic containing the "Focus Aid" branding and clinical suite information, converting the background to transparent.
-- **Android**: Configured a themed launcher splash screen using [launch_screen.xml](file:///Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/android/app/src/main/res/drawable/launch_screen.xml) to show the logo instantly on startup and transition smoothly.
-- **iOS**: Updated [LaunchScreen.storyboard](file:///Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/ios/HearingTriggerRN/LaunchScreen.storyboard) to present a centered `UIImageView` using the new logo asset, forcing a white background in all system themes.
+FocusAid has been completely migrated from React Native to a high-performance, pure native Swift and SwiftUI iOS application. This native implementation provides direct access to iOS audio frameworks, eliminates JavaScript bridge latency, and offers a highly responsive, offline-first user experience.
 
 ---
 
-## 2. Offline Model Bundling & linking
+## 1. System Architecture
 
-### Whisper and Sherpa-ONNX Models Staged:
+The native application utilizes a modular services-and-views architecture for processing on-device audio in real-time.
 
-- **Android**: Plist & Model assets copied to `android/app/src/main/assets/models/`.
-- **iOS**: Copied to `ios/models/`.
-
-### iOS Xcode Project Linking:
-
-- We wrote and executed a custom Swift compilation tool using the XcodeProj library in the `scratch/` directory to link the `ios/models/` folder reference directly to `HearingTriggerRN.xcodeproj`.
-- Verified that the folder reference correctly appears in the resources copy build phase under [project.pbxproj](file:///Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/ios/HearingTriggerRN.xcodeproj/project.pbxproj).
-
-### JS Asset Copy Logic:
-
-- Updated [modelManager.ts](file:///Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/src/services/modelManager.ts) to check for local model existence in `RNFS.DocumentDirectoryPath`. On first run, the app extracts the models from native assets (using `copyFileAssets` on Android or bundle path `copyFile` on iOS) to the filesystem instead of downloading over the internet.
-- Updated [paths.ts](file:///Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/src/utils/paths.ts), [HomeScreen.tsx](file:///Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/src/screens/HomeScreen.tsx), and [SettingsScreen.tsx](file:///Users/sathyapriya/Desktop/React-Native/hearing-trigger-rn/src/screens/SettingsScreen.tsx) to use the quantized medium model (`medium.en-q5_0`) by default.
-
----
-
-## 3. Latency & Logging Optimizations
-
-- **Pre-roll Tuning**: Reduced the pre-roll capture buffer to **0.5 seconds** (down from 1.0s) on both Android (`HearingForegroundService.kt`) and iOS (`HearingTriggerModule.swift`) to minimize audio chunk sizes processed by Whisper.
-- **VAD Sensitivity**: Lowered the minimum sustained speech verification threshold to **350ms** (down from 700ms) on both Android and iOS for faster, near-instant speech detection.
-- **Post-Capture Window**: Reduced the keyword post-capture recording duration to **1.0 second** (down from 1.5s/3.0s) in `kwsService.ts` to decrease wait delay after speech onset.
-- **Whisper Multithreading**: Configured Whisper to utilize **4 CPU threads** during transcription in `whisperService.ts`.
-- **Instantaneous KWS Logging**: Separated the logging stages in `audioBridge.ts` so the `[AudioBridge] KWS Triggered (Native VAD)` message prints immediately when the native module detects speech, rather than waiting for Whisper to transcribe first. It also tracks and prints the exact Whisper transcription duration (e.g., `Whisper Transcript (230ms)`).
+```mermaid
+graph TD
+    AVEngine[AVAudioEngine 16kHz PCM] --> VAD[VADEngine.swift]
+    VAD -->|Speech Frame| HM[HearingManager.swift]
+    VAD -->|Silence| AVEngine
+    HM -->|Keyword Spoken| ASD[AcousticSceneDetector.swift]
+    HM -->|Keyword Spoken| ST[SpeechTranscriber.swift]
+    ASD -->|Scene Tag| DR[DetectionRecord.swift]
+    ST -->|ASR Transcript & Confidence| DR
+    DR --> SS[SettingsStore.swift]
+    SS -->|SwiftUI State updates| TabView[MainTabView.swift]
+    TabView --> Home[HomeView.swift]
+    TabView --> History[HistoryView.swift]
+    TabView --> Settings[SettingsView.swift]
+```
 
 ---
 
-## 4. Compilation Verification
+## 2. Component Directory & File Index
 
-- **Android**: Executed `./gradlew assembleDebug` successfully with all assets bundled.
-- **iOS**: Executed `xcodebuild` successfully on the simulator target workspace with resources linked.
+### Core Architecture & App Life Cycle
+- **[HearingTriggerApp.swift](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid/HearingTriggerSwift/HearingTriggerApp.swift)**: The entry point setup with `@main` initiating the SwiftUI view hierarchy and managing initial notifications.
+- **[AppDelegate.mm](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid/AppDelegate.mm)**: Integrates the Objective-C entry hook required for linking and bridge setup.
+
+### Core Services (Business Logic)
+- **[VADEngine.swift](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid/HearingTriggerSwift/Services/VADEngine.swift)**: Performs local energy-threshold voice activity detection to filter out ambient silence, saving CPU cycles before patterns are matched.
+- **[HearingManager.swift](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid/HearingTriggerSwift/Services/HearingManager.swift)**: Orchestrates `AVAudioEngine` capture, streams buffer buffers to VAD, scans PCM data frames for configured keyword signals, and coordinates background workers.
+- **[SpeechTranscriber.swift](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid/HearingTriggerSwift/Services/SpeechTranscriber.swift)**: Manages Apple's native, offline-capable `SFSpeechRecognizer` API to transcribe short audio buffers post-trigger.
+- **[AcousticSceneDetector.swift](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid/HearingTriggerSwift/Services/AcousticSceneDetector.swift)**: Leverages YAMNet via TensorFlow Lite (`TensorFlowLiteSwift` pod) to categorize the environment soundscape (e.g. Hall, Office, Restaurant, or Street).
+
+### UI Screens & View Components
+- **[MainTabView.swift](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid/HearingTriggerSwift/UI/MainTabView.swift)**: Primary navigation hub containing tabs for Listen (Home), History, and Settings.
+- **[HomeView.swift](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid/HearingTriggerSwift/UI/HomeView.swift)**: The main listening dashboard featuring state toggles, status reports, and active scene tracking.
+- **[HistoryView.swift](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid/HearingTriggerSwift/UI/HistoryView.swift)**: A scrollable, reverse-chronological interface displaying past detections.
+- **[SettingsView.swift](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid/HearingTriggerSwift/UI/SettingsView.swift)**: Allows interactive configuration of keywords, sliders for confidence, and toggles for haptics.
+- **[SplashScreenView.swift](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid/HearingTriggerSwift/UI/SplashScreenView.swift)**: Premium branded native launch view animation.
+- **[PermissionGateView.swift](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid/HearingTriggerSwift/UI/PermissionGateView.swift)**: Interactive walkthrough requesting Microphone and Speech Recognition permissions.
+- **[PulseRingView.swift](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid/HearingTriggerSwift/UI/Components/PulseRingView.swift)**: Custom SwiftUI pulse animation surrounding the microphone badge when active.
+- **[DetectionCardView.swift](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid/HearingTriggerSwift/UI/Components/DetectionCardView.swift)**: Sub-card presenting transcripts, timestamp metadata, confidence tags, and scene labels.
+
+---
+
+## 3. UI Overview & Layouts
+
+Below is the visual overview of the live listening dashboard state:
+
+### Active Listening State
+![Active Listening](docs/screenshot_active.png)
+*Active UI showing real-time scene classification (Office, Hall, etc.) alongside pulsed mic ring animation and recent detections.*
+
+### Mic Inactive State
+![Mic Inactive](docs/screenshot_idle.png)
+*Idle dashboard indicating audio processing is paused.*
+
+---
+
+## 4. Setup & Verification
+
+Build settings have been updated to target Apple platforms natively via CocoaPods:
+
+1. **CocoaPods Dependency Manager**:
+   Verified and configured using the local [Podfile](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/Podfile) targeting static pods including:
+   - `TensorFlowLiteSwift (~> 2.14.0)`
+2. **Project Files**:
+   Linked and verified inside [FocusAid.xcworkspace](file:///Users/sathyapriya/Desktop/React-Native/FocusAid/ios/FocusAid.xcworkspace).
